@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Тренировки | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'montserrat': ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            'pingpong-blue': '#1e40af',
+            'pingpong-orange': '#ea580c',
+            'pingpong-green': '#10b981',
+            'pingpong-purple': '#8b5cf6'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(16, 185, 129, 0.9), rgba(16, 185, 129, 0.8)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    .training-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .training-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .level-beginner { border-left: 4px solid #10b981; }
+    .level-intermediate { border-left: 4px solid #3b82f6; }
+    .level-advanced { border-left: 4px solid #8b5cf6; }
+    .level-pro { border-left: 4px solid #f59e0b; }
+    
+    .schedule-day {
+      transition: all 0.3s ease;
+    }
+    .schedule-day:hover {
+      background-color: #f0f9ff;
+      transform: scale(1.02);
+    }
+    
+    .tab-active {
+      background-color: #1e40af;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-montserrat">
+
+  <!-- Навигация -->
+  <header class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold flex items-center space-x-2 text-pingpong-blue">
+        <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange"></i>
+        <span>PingPong Club</span>
+      </a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Главная</a>
+        <a href="about.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">О нас</a>
+        <a href="tournaments.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Турниры</a>
+        <a href="training.html" class="font-medium text-pingpong-blue border-b-2 border-pingpong-blue pb-1">Тренировки</a>
+        <a href="contacts.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Контакты</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="authorization.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
+          <i class="fas fa-sign-in-alt mr-2"></i>Вход
+        </a>
+        <button class="md:hidden text-gray-600">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Хлебные крошки -->
+<nav class="bg-gray-100 py-4">
+  <div class="max-w-7xl mx-auto px-4">
+    <ol class="flex items-center space-x-2 text-sm">
+      <li>
+        <a href="index.html" class="text-pingpong-blue hover:text-pingpong-orange transition">
+          <i class="fas fa-home mr-1"></i>Главная
+        </a>
+      </li>
+      <li class="flex items-center">
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+      </li>
+      <li class="text-gray-600">
+        <span>Тренировки</span>
+      </li>
+    </ol>
+  </div>
+</nav>
+
+  <!-- Герой секция -->
+  <section class="hero-bg text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Профессиональные тренировки</h1>
+      <p class="text-xl md:text-2xl max-w-3xl mx-auto">Индивидуальный подход для игроков любого уровня подготовки</p>
+    </div>
+  </section>
+
+  <!-- Программы тренировок -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Программы тренировок</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div class="training-card bg-white rounded-lg shadow-lg p-6 level-beginner">
+          <div class="text-center mb-4">
+            <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+              <i class="fas fa-seedling text-green-600 text-2xl"></i>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold text-center mb-3">Начинающий</h3>
+          <ul class="space-y-2 text-sm text-gray-600 mb-4">
+            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Основы техники</li>
+            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Правильная хватка</li>
+            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Базовые удары</li>
+            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Подачи и прием</li>
+          </ul>
+          <div class="text-center">
+            <span class="text-2xl font-bold text-green-600">1 500 ₽</span>
+            <span class="text-gray-500 text-sm">/ занятие</span>
+          </div>
+        </div>
+
+        <div class="training-card bg-white rounded-lg shadow-lg p-6 level-intermediate">
+          <div class="text-center mb-4">
+            <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+              <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold text-center mb-3">Продолжающий</h3>
+          <ul class="space-y-2 text-sm text-gray-600 mb-4">
+            <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Тактика игры</li>
+            <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Сложные удары</li>
+            <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Работа у стола</li>
+            <li class="flex items-center"><i class="fas fa-check text-blue-500 mr-2"></i> Контроль вращений</li>
+          </ul>
+          <div class="text-center">
+            <span class="text-2xl font-bold text-blue-600">2 000 ₽</span>
+            <span class="text-gray-500 text-sm">/ занятие</span>
+          </div>
+        </div>
+
+        <div class="training-card bg-white rounded-lg shadow-lg p-6 level-advanced">
+          <div class="text-center mb-4">
+            <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+              <i class="fas fa-rocket text-purple-600 text-2xl"></i>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold text-center mb-3">Продвинутый</h3>
+          <ul class="space-y-2 text-sm text-gray-600 mb-4">
+            <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Индивидуальная тактика</li>
+            <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Психология игры</li>
+            <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Анализ противников</li>
+            <li class="flex items-center"><i class="fas fa-check text-purple-500 mr-2"></i> Подготовка к турнирам</li>
+          </ul>
+          <div class="text-center">
+            <span class="text-2xl font-bold text-purple-600">2 500 ₽</span>
+            <span class="text-gray-500 text-sm">/ занятие</span>
+          </div>
+        </div>
+
+        <div class="training-card bg-white rounded-lg shadow-lg p-6 level-pro">
+          <div class="text-center mb-4">
+            <div class="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+              <i class="fas fa-crown text-yellow-600 text-2xl"></i>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold text-center mb-3">Профессиональный</h3>
+          <ul class="space-y-2 text-sm text-gray-600 mb-4">
+            <li class="flex items-center"><i class="fas fa-check text-yellow-500 mr-2"></i> Интенсивные тренировки</li>
+            <li class="flex items-center"><i class="fas fa-check text-yellow-500 mr-2"></i> Видеоанализ</li>
+            <li class="flex items-center"><i class="fas fa-check text-yellow-500 mr-2"></i> Спарринги с про-игроками</li>
+            <li class="flex items-center"><i class="fas fa-check text-yellow-500 mr-2"></i> Полное сопровождение</li>
+          </ul>
+          <div class="text-center">
+            <span class="text-2xl font-bold text-yellow-600">3 500 ₽</span>
+            <span class="text-gray-500 text-sm">/ занятие</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <a href="#signup" class="bg-pingpong-orange text-white px-8 py-3 rounded-lg font-medium hover:bg-orange-600 transition inline-block">
+          <i class="fas fa-calendar-check mr-2"></i>Записаться на пробную тренировку
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Расписание -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Расписание групповых тренировок</h2>
+      
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-7 gap-0">
+          <!-- Заголовки дней -->
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Время</div>
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Понедельник</div>
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Вторник</div>
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Среда</div>
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Четверг</div>
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Пятница</div>
+          <div class="bg-pingpong-blue text-white p-4 text-center font-bold">Суббота</div>
+          
+          <!-- Строки расписания -->
+          <div class="p-4 bg-gray-50 border-b font-medium">09:00 - 10:30</div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium mb-1">Начинающие</div>
+            <p class="text-sm">Гревцов В.</p>
+          </div>
+          <div class="p-4 border-b"></div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium mb-1">Начинающие</div>
+            <p class="text-sm">Пылков Т.</p>
+          </div>
+          <div class="p-4 border-b"></div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium mb-1">Продолжающие</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium mb-1">Детская группа</div>
+            <p class="text-sm">Дюкарев И.</p>
+          </div>
+
+          <div class="p-4 bg-gray-50 border-b font-medium">11:00 - 12:30</div>
+          <div class="p-4 border-b"></div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium mb-1">Продолжающие</div>
+            <p class="text-sm">Пылков Т.</p>
+          </div>
+          <div class="p-4 border-b"></div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium mb-1">Продвинутые</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+          <div class="p-4 border-b"></div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-medium mb-1">Профессионалы</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+
+          <div class="p-4 bg-gray-50 border-b font-medium">18:00 - 19:30</div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium mb-1">Продолжающие</div>
+            <p class="text-sm">Гревцов В.</p>
+          </div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium mb-1">Начинающие</div>
+            <p class="text-sm">Дюкарев И.</p>
+          </div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium mb-1">Продвинутые</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium mb-1">Продолжающие</div>
+            <p class="text-sm">Гревцов В.</p>
+          </div>
+          <div class="p-4 border-b schedule-day">
+            <div class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium mb-1">Начинающие</div>
+            <p class="text-sm">Гревцов В.</p>
+          </div>
+          <div class="p-4 border-b"></div>
+
+          <div class="p-4 bg-gray-50 font-medium">20:00 - 21:30</div>
+          <div class="p-4 schedule-day">
+            <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium mb-1">Продвинутые</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+          <div class="p-4 schedule-day">
+            <div class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-medium mb-1">Профессионалы</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+          <div class="p-4 schedule-day">
+            <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium mb-1">Продолжающие</div>
+            <p class="text-sm">Пылков Т.</p>
+          </div>
+          <div class="p-4 schedule-day">
+            <div class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm font-medium mb-1">Продвинутые</div>
+            <p class="text-sm">Ткачук Р.</p>
+          </div>
+          <div class="p-4 schedule-day">
+            <div class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-medium mb-1">Профессионалы</div>
+            <p class="text-sm">Гревцов В.</p>
+          </div>
+          <div class="p-4"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Форма записи -->
+  <section id="signup" class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Запись на тренировку</h2>
+      
+      <div class="bg-gray-50 rounded-xl p-8">
+        <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Ваше имя</label>
+            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent" required>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+            <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent" required>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent" required>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Уровень подготовки</label>
+            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent">
+              <option>Начинающий</option>
+              <option>Продолжающий</option>
+              <option>Продвинутый</option>
+              <option>Профессионал</option>
+            </select>
+          </div>
+          
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Предпочтительное время</label>
+            <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent" rows="3" placeholder="Укажите удобные дни и время для тренировок"></textarea>
+          </div>
+          
+          <div class="md:col-span-2">
+            <button type="submit" class="w-full bg-pingpong-green text-white py-3 rounded-lg font-medium hover:bg-green-600 transition">
+              <i class="fas fa-paper-plane mr-2"></i>Отправить заявку
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Частые вопросы -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Частые вопросы</h2>
+      
+      <div class="space-y-4">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <button class="w-full px-6 py-4 text-left font-medium text-lg flex justify-between items-center">
+            <span>Нужно ли иметь свою ракетку?</span>
+            <i class="fas fa-chevron-down transition-transform"></i>
+          </button>
+          <div class="px-6 pb-4 hidden">
+            <p class="text-gray-600">Нет, для первых занятий мы предоставляем ракетки бесплатно. Когда определитесь со своим стилем игры, поможем подобрать подходящую ракетку.</p>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <button class="w-full px-6 py-4 text-left font-medium text-lg flex justify-between items-center">
+            <span>Как часто нужно тренироваться?</span>
+            <i class="fas fa-chevron-down transition-transform"></i>
+          </button>
+          <div class="px-6 pb-4 hidden">
+            <p class="text-gray-600">Рекомендуем тренироваться 2-3 раза в неделю для оптимального прогресса. Однако график можно адаптировать под ваши возможности.</p>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <button class="w-full px-6 py-4 text-left font-medium text-lg flex justify-between items-center">
+            <span>Есть ли возрастные ограничения?</span>
+            <i class="fas fa-chevron-down transition-transform"></i>
+          </button>
+          <div class="px-6 pb-4 hidden">
+            <p class="text-gray-600">Тренировки доступны для всех возрастов от 6 лет. У нас есть детские, взрослые и специальные группы для старшего поколения.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange mr-2"></i>
+            PingPong Club
+          </h3>
+          <p class="text-gray-400">Лучший клуб настольного тенниса в вашем городе.</p>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Навигация</h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white transition">Главная</a></li>
+            <li><a href="about.html" class="text-gray-400 hover:text-white transition">О нас</a></li>
+            <li><a href="tournaments.html" class="text-gray-400 hover:text-white transition">Турниры</a></li>
+            <li><a href="training.html" class="text-gray-400 hover:text-white transition">Тренировки</a></li>
+            <li><a href="contacts.html" class="text-gray-400 hover:text-white transition">Контакты</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Контакты</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> г. Москва, ул. Спортивная, 15</li>
+            <li class="flex items-center"><i class="fas fa-phone mr-2"></i> +7 (999) 123-45-67</li>
+            <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> info@pingpongclub.ru</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Мы в соцсетях</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-vk text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-telegram text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube text-xl"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2025 PingPong Club. Все права защищены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт для FAQ и авторизации -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Функция для аккордеона FAQ
+    function initFAQ() {
+      const faqButtons = document.querySelectorAll('.bg-white.rounded-lg button');
+      
+      faqButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const content = button.nextElementSibling;
+          const icon = button.querySelector('i');
+          
+          // Переключаем видимость контента
+          content.classList.toggle('hidden');
+          
+          // Поворачиваем иконку
+          icon.classList.toggle('rotate-180');
+        });
+      });
+    }
+
+    // Управление авторизацией
+    onAuthStateChanged(auth, (user) => {
+      const authButton = document.querySelector('a[href="authorization.html"]');
+      
+      if (user) {
+        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+        authButton.href = "#";
+        
+        let logoutBtn = document.getElementById('logoutButton');
+        if (!logoutBtn) {
+          logoutBtn = document.createElement('a');
+          logoutBtn.id = 'logoutButton';
+          logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
+          logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
+          logoutBtn.href = "#";
+          logoutBtn.onclick = async () => {
+            await signOut(auth);
+            window.location.reload();
+          };
+          authButton.parentNode.appendChild(logoutBtn);
+        }
+      } else {
+        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+        authButton.href = "authorization.html";
+        
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) logoutBtn.remove();
+      }
+    });
+
+    // Обработка формы записи
+    const signupForm = document.querySelector('form');
+    if (signupForm) {
+      signupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Спасибо за заявку! Мы свяжемся с вами в ближайшее время для подтверждения тренировки.');
+        signupForm.reset();
+      });
+    }
+
+    // Инициализация FAQ при загрузке страницы
+    initFAQ();
+  </script>
+
+</body>
+</html>

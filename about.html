@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>О нас | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'montserrat': ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            'pingpong-blue': '#1e40af',
+            'pingpong-orange': '#ea580c',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(30, 64, 175, 0.9), rgba(30, 64, 175, 0.8)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    .pingpong-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .pingpong-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .value-icon {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-montserrat">
+
+  <!-- Навигация -->
+  <header class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold flex items-center space-x-2 text-pingpong-blue">
+        <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange"></i>
+        <span>PingPong Club</span>
+      </a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Главная</a>
+        <a href="about.html" class="font-medium text-pingpong-blue border-b-2 border-pingpong-blue pb-1">О нас</a>
+        <a href="tournaments.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Турниры</a>
+        <a href="training.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Тренировки</a>
+        <a href="contacts.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Контакты</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="authorization.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
+          <i class="fas fa-sign-in-alt mr-2"></i>Вход
+        </a>
+        <button class="md:hidden text-gray-600">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+<!-- Хлебные крошки -->
+<nav class="bg-gray-100 py-4">
+  <div class="max-w-7xl mx-auto px-4">
+    <ol class="flex items-center space-x-2 text-sm">
+      <li>
+        <a href="index.html" class="text-pingpong-blue hover:text-pingpong-orange transition">
+          <i class="fas fa-home mr-1"></i>Главная
+        </a>
+      </li>
+      <li class="flex items-center">
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+      </li>
+      <li class="text-gray-600">
+        <span>О нас</span>
+      </li>
+    </ol>
+  </div>
+</nav>
+  <!-- Герой секция -->
+  <section class="hero-bg text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">О нашем клубе</h1>
+      <p class="text-xl md:text-2xl max-w-3xl mx-auto">Мы создаем лучшее сообщество для любителей настольного тенниса с 2015 года</p>
+    </div>
+  </section>
+
+  <!-- О клубе -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">Наша история</h2>
+          <p class="text-lg text-gray-600 mb-4">
+            PingPong Club был основан в 2015 году группой энтузиастов, которые хотели создать пространство, 
+            где каждый мог бы насладиться игрой в настольный теннис независимо от уровня подготовки.
+          </p>
+          <p class="text-lg text-gray-600 mb-4">
+            За эти годы мы выросли из небольшого клуба в современный центр с профессиональными столами, 
+            опытными тренерами и активным сообществом единомышленников.
+          </p>
+          <p class="text-lg text-gray-600">
+            Сегодня наш клуб — это не просто место для игры, а настоящая семья, где каждый находит 
+            друзей, поддержку и возможность для роста.
+          </p>
+        </div>
+        <div class="rounded-lg overflow-hidden shadow-2xl">
+          <img src="images/tennishall.jpg" 
+               alt="Интерьер клуба" class="w-full h-80 object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Наши ценности -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Наши ценности</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-lg pingpong-card text-center">
+          <div class="value-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-users text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Сообщество</h3>
+          <p class="text-gray-600">Мы создаем дружескую атмосферу, где каждый чувствует себя частью большой семьи</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg pingpong-card text-center">
+          <div class="value-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-trophy text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Развитие</h3>
+          <p class="text-gray-600">Помогаем каждому игроку расти и достигать новых высот в настольном теннисе</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-lg pingpong-card text-center">
+          <div class="value-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-heart text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Страсть</h3>
+          <p class="text-gray-600">Разделяем любовь к настольному теннису и вдохновляем других открывать для себя этот спорт</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Команда -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Наша команда</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center pingpong-card">
+          <div class="bg-gray-200 rounded-full w-32 h-32 mx-auto mb-4 overflow-hidden">
+            <img src="images/roman.jpg" 
+                 alt="Ткачук Роман" class="w-full h-full object-cover">
+          </div>
+          <h3 class="text-xl font-bold mb-1">Ткачук Роман</h3>
+          <p class="text-pingpong-orange font-medium mb-2">Главный тренер</p>
+          <p class="text-gray-600 text-sm">Мастер спорта международного класса, опыт работы 15 лет</p>
+        </div>
+        <div class="text-center pingpong-card">
+          <div class="bg-gray-200 rounded-full w-32 h-32 mx-auto mb-4 overflow-hidden">
+            <img src="images/vlad.jpg" 
+                 alt="Гревцов Владислав" class="w-full h-full object-cover">
+          </div>
+          <h3 class="text-xl font-bold mb-1">Гревцов Владислав</h3>
+          <p class="text-pingpong-orange font-medium mb-2">Тренер</p>
+          <p class="text-gray-600 text-sm">Кандидат в мастера спорта, опыт работы 8 лет</p>
+        </div>
+        <div class="text-center pingpong-card">
+          <div class="bg-gray-200 rounded-full w-32 h-32 mx-auto mb-4 overflow-hidden">
+            <img src="images/vanya.jpg" 
+                 alt="Дюкарев Ванек" class="w-full h-full object-cover">
+          </div>
+          <h3 class="text-xl font-bold mb-1">Дюкарев Ванек</h3>
+          <p class="text-pingpong-orange font-medium mb-2">Администратор</p>
+          <p class="text-gray-600 text-sm">Организатор турниров, за 6 лет ничего не сделал</p>
+        </div>
+        <div class="text-center pingpong-card">
+          <div class="bg-gray-200 rounded-full w-32 h-32 mx-auto mb-4 overflow-hidden">
+            <img src="images\timofei.jpg"
+                 alt="Тимофей Пылков" class="w-full h-full object-cover">
+          </div>
+          <h3 class="text-xl font-bold mb-1">Пылков Тимофей</h3>
+          <p class="text-pingpong-orange font-medium mb-2">Тренер детской группы</p>
+          <p class="text-gray-600 text-sm">Кандидат в мастера спорта, опыт работы 9 лет</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Достижения -->
+  <section class="py-16 bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-12">Наши достижения</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="pingpong-card">
+          <div class="text-4xl font-bold text-pingpong-orange mb-2">500+</div>
+          <p class="text-gray-300">Постоянных членов клуба</p>
+        </div>
+        <div class="pingpong-card">
+          <div class="text-4xl font-bold text-pingpong-orange mb-2">150+</div>
+          <p class="text-gray-300">Проведенных турниров</p>
+        </div>
+        <div class="pingpong-card">
+          <div class="text-4xl font-bold text-pingpong-orange mb-2">12</div>
+          <p class="text-gray-300">Профессиональных столов</p>
+        </div>
+        <div class="pingpong-card">
+          <div class="text-4xl font-bold text-pingpong-orange mb-2">8</div>
+          <p class="text-gray-300">Лет успешной работы</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Призыв к действию -->
+  <section class="py-16 bg-pingpong-blue text-white">
+    <div class="max-w-4xl mx-auto text-center px-4">
+      <h2 class="text-3xl font-bold mb-4">Готовы присоединиться к нам?</h2>
+      <p class="text-xl mb-8">Приходите на первую бесплатную тренировку и почувствуйте атмосферу нашего клуба!</p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="contacts.html" class="bg-pingpong-orange text-white px-8 py-3 rounded-lg font-medium hover:bg-orange-600 transition">Записаться на тренировку</a>
+        <a href="tournaments.html" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-gray-900 transition">Узнать о турнирах</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange mr-2"></i>
+            PingPong Club
+          </h3>
+          <p class="text-gray-400">Лучший клуб настольного тенниса в вашем городе.</p>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Навигация</h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white transition">Главная</a></li>
+            <li><a href="about.html" class="text-gray-400 hover:text-white transition">О нас</a></li>
+            <li><a href="tournaments.html" class="text-gray-400 hover:text-white transition">Турниры</a></li>
+            <li><a href="training.html" class="text-gray-400 hover:text-white transition">Тренировки</a></li>
+            <li><a href="contacts.html" class="text-gray-400 hover:text-white transition">Контакты</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Контакты</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> г. Москва, ул. Спортивная, 15</li>
+            <li class="flex items-center"><i class="fas fa-phone mr-2"></i> +7 (999) 123-45-67</li>
+            <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> info@pingpongclub.ru</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Мы в соцсетях</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-vk text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-telegram text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube text-xl"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2025 PingPong Club. Все права защищены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт для управления авторизацией (аналогичный главной странице) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Обновляем навигацию в зависимости от состояния авторизации
+    onAuthStateChanged(auth, (user) => {
+      const authButton = document.querySelector('a[href="authorization.html"]');
+      
+      if (user) {
+        // Пользователь вошел - меняем кнопку
+        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+        authButton.href = "#";
+        authButton.onclick = null;
+        
+        // Создаем кнопку выхода
+        let logoutBtn = document.getElementById('logoutButton');
+        if (!logoutBtn) {
+          logoutBtn = document.createElement('a');
+          logoutBtn.id = 'logoutButton';
+          logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
+          logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
+          logoutBtn.href = "#";
+          logoutBtn.onclick = async () => {
+            await signOut(auth);
+            window.location.reload();
+          };
+          authButton.parentNode.appendChild(logoutBtn);
+        }
+      } else {
+        // Пользователь не вошел - стандартная кнопка входа
+        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+        authButton.href = "authorization.html";
+        authButton.onclick = null;
+        
+        // Удаляем кнопку выхода если есть
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+          logoutBtn.remove();
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

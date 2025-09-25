@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /tmp/
+Disallow: /*.php$
+Disallow: /*.js$
+Disallow: /*.css$
+
+# Разрешаем индексацию основных страниц
+Allow: /index.html
+Allow: /about.html
+Allow: /tournaments.html
+Allow: /training.html
+Allow: /contacts.html
+Allow: /authorization.html
+
+# Sitemap location
+Sitemap: https://http://127.0.0.1:5500/index.html/sitemap.xml
+
+# Crawl-delay: 1
+User-agent: Yandex
+Crawl-delay: 1
+
+User-agent: Googlebot
+Crawl-delay: 1
+
+# Host (для Яндекс)
+Host: http://127.0.0.1:5500/index.html
+
+# Clean-param: ref /some_dir/

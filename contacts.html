@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Контакты | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'montserrat': ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            'pingpong-blue': '#1e40af',
+            'pingpong-orange': '#ea580c',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .hero-bg {
+      background: linear-gradient(rgba(30, 64, 175, 0.9), rgba(30, 64, 175, 0.8)), url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    .contact-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .map-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-montserrat">
+
+  <!-- Навигация -->
+  <header class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold flex items-center space-x-2 text-pingpong-blue">
+        <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange"></i>
+        <span>PingPong Club</span>
+      </a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Главная</a>
+        <a href="about.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">О нас</a>
+        <a href="tournaments.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Турниры</a>
+        <a href="training.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Тренировки</a>
+        <a href="contacts.html" class="font-medium text-pingpong-blue border-b-2 border-pingpong-blue pb-1">Контакты</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="authorization.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
+          <i class="fas fa-sign-in-alt mr-2"></i>Вход
+        </a>
+        <button class="md:hidden text-gray-600">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Хлебные крошки -->
+<nav class="bg-gray-100 py-4">
+  <div class="max-w-7xl mx-auto px-4">
+    <ol class="flex items-center space-x-2 text-sm">
+      <li>
+        <a href="index.html" class="text-pingpong-blue hover:text-pingpong-orange transition">
+          <i class="fas fa-home mr-1"></i>Главная
+        </a>
+      </li>
+      <li class="flex items-center">
+        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+      </li>
+      <li class="text-gray-600">
+        <span>Контакты</span>
+      </li>
+    </ol>
+  </div>
+</nav>
+
+  <!-- Герой секция -->
+  <section class="hero-bg text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Свяжитесь с нами</h1>
+      <p class="text-xl md:text-2xl max-w-3xl mx-auto">Мы всегда рады ответить на ваши вопросы и помочь с записью</p>
+    </div>
+  </section>
+
+  <!-- Контактная информация -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Контактные карточки -->
+        <div class="contact-card bg-white rounded-xl shadow-lg p-8 text-center">
+          <div class="bg-pingpong-blue w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-map-marker-alt text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Адрес</h3>
+          <p class="text-gray-600 mb-2">г. Москва, ул. Спортивная, 15</p>
+          <p class="text-gray-500 text-sm">Метро: Спортивная (5 минут пешком)</p>
+        </div>
+
+        <div class="contact-card bg-white rounded-xl shadow-lg p-8 text-center">
+          <div class="bg-pingpong-orange w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-phone-alt text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Телефоны</h3>
+          <p class="text-gray-600 mb-2">+7 (999) 123-45-67</p>
+          <p class="text-gray-600">+7 (495) 123-45-67</p>
+          <p class="text-gray-500 text-sm mt-2">Ежедневно с 9:00 до 22:00</p>
+        </div>
+
+        <div class="contact-card bg-white rounded-xl shadow-lg p-8 text-center">
+          <div class="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-envelope text-white text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Email</h3>
+          <p class="text-gray-600 mb-2">info@pingpongclub.ru</p>
+          <p class="text-gray-600">booking@pingpongclub.ru</p>
+          <p class="text-gray-500 text-sm mt-2">Ответим в течение 2 часов</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Карта и форма -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Карта -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">Как нас найти</h2>
+          <div class="map-container bg-gray-200 h-96 mb-6">
+            <!-- Заглушка для карты - можно заменить на реальную карту -->
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200">
+              <div class="text-center">
+                <i class="fas fa-map-marked-alt text-4xl text-pingpong-blue mb-2"></i>
+                <p class="text-gray-700 font-medium">Карта расположения клуба</p>
+                <p class="text-gray-600 text-sm">г. Москва, ул. Спортивная, 15</p>
+              </div>
+            </div>
+            <!-- Для реальной карты раскомментируйте:
+            <iframe 
+              src="https://yandex.ru/map-widget/v1/?um=constructor%3A1a2b3c4d5e6f7g8h9i0j&amp;source=constructor" 
+              width="100%" 
+              height="100%" 
+              frameborder="0">
+            </iframe>
+            -->
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+              <h4 class="font-bold mb-3 flex items-center">
+                <i class="fas fa-subway text-pingpong-blue mr-2"></i>
+                Метро
+              </h4>
+              <p class="text-gray-600">Станция "Спортивная"</p>
+              <p class="text-gray-500 text-sm">5 минут пешком от метро</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-sm">
+              <h4 class="font-bold mb-3 flex items-center">
+                <i class="fas fa-bus text-pingpong-orange mr-2"></i>
+                Автобус
+              </h4>
+              <p class="text-gray-600">Остановка "Ул. Спортивная"</p>
+              <p class="text-gray-500 text-sm">Автобусы: 123, 456, 789</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Форма обратной связи -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">Обратная связь</h2>
+          <div class="bg-white rounded-xl shadow-lg p-8">
+            <form id="contactForm" class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ваше имя *</label>
+                <input type="text" id="name" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent transition">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                <input type="email" id="email" required 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent transition">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+                <input type="tel" id="phone" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent transition">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Тема сообщения *</label>
+                <select id="subject" required 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent transition">
+                  <option value="">Выберите тему</option>
+                  <option value="training">Запись на тренировку</option>
+                  <option value="tournament">Участие в турнире</option>
+                  <option value="rental">Аренда стола</option>
+                  <option value="partnership">Сотрудничество</option>
+                  <option value="other">Другое</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Сообщение *</label>
+                <textarea id="message" required rows="5"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue focus:border-transparent transition"
+                          placeholder="Опишите ваш вопрос или пожелание..."></textarea>
+              </div>
+              
+              <button type="submit" class="w-full bg-pingpong-blue text-white py-3 rounded-lg font-medium hover:bg-blue-800 transition">
+                <i class="fas fa-paper-plane mr-2"></i>Отправить сообщение
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- График работы -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">График работы</h2>
+      
+      <div class="max-w-2xl mx-auto">
+        <div class="bg-gray-50 rounded-xl p-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-clock text-pingpong-blue mr-2"></i>
+                Часы работы
+              </h3>
+              <ul class="space-y-3">
+                <li class="flex justify-between">
+                  <span class="font-medium">Пн - Пт:</span>
+                  <span>07:00 - 23:00</span>
+                </li>
+                <li class="flex justify-between">
+                  <span class="font-medium">Суббота:</span>
+                  <span>08:00 - 00:00</span>
+                </li>
+                <li class="flex justify-between">
+                  <span class="font-medium">Воскресенье:</span>
+                  <span>08:00 - 22:00</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fas fa-info-circle text-pingpong-orange mr-2"></i>
+                Дополнительная информация
+              </h3>
+              <ul class="space-y-2 text-gray-600">
+                <li class="flex items-center">
+                  <i class="fas fa-wifi text-green-500 mr-2"></i>
+                  Бесплатный Wi-Fi
+                </li>
+                <li class="flex items-center">
+                  <i class="fas fa-parking text-blue-500 mr-2"></i>
+                  Бесплатная парковка
+                </li>
+                <li class="flex items-center">
+                  <i class="fas fa-utensils text-orange-500 mr-2"></i>
+                  Кафе и бар
+                </li>
+                <li class="flex items-center">
+                  <i class="fas fa-shopping-bag text-purple-500 mr-2"></i>
+                  Прокат инвентаря
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Социальные сети -->
+  <section class="py-16 bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Мы в социальных сетях</h2>
+      <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Подписывайтесь на наши соцсети, чтобы быть в курсе последних событий, акций и турниров</p>
+      
+      <div class="flex justify-center space-x-6 mb-8">
+        <a href="#" class="bg-blue-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-700 transition transform hover:scale-110">
+          <i class="fab fa-vk text-xl"></i>
+        </a>
+        <a href="#" class="bg-blue-400 w-12 h-12 rounded-full flex items-center justify-center hover:bg-blue-500 transition transform hover:scale-110">
+          <i class="fab fa-telegram text-xl"></i>
+        </a>
+        <a href="#" class="bg-pink-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-pink-700 transition transform hover:scale-110">
+          <i class="fab fa-instagram text-xl"></i>
+        </a>
+        <a href="#" class="bg-red-600 w-12 h-12 rounded-full flex items-center justify-center hover:bg-red-700 transition transform hover:scale-110">
+          <i class="fab fa-youtube text-xl"></i>
+        </a>
+      </div>
+      
+      <p class="text-gray-400">Есть вопросы? Пишите нам в мессенджеры!</p>
+    </div>
+  </section>
+
+  <!-- Подвал -->
+  <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4 flex items-center">
+            <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange mr-2"></i>
+            PingPong Club
+          </h3>
+          <p class="text-gray-400">Лучший клуб настольного тенниса в вашем городе.</p>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Навигация</h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white transition">Главная</a></li>
+            <li><a href="about.html" class="text-gray-400 hover:text-white transition">О нас</a></li>
+            <li><a href="tournaments.html" class="text-gray-400 hover:text-white transition">Турниры</a></li>
+            <li><a href="training.html" class="text-gray-400 hover:text-white transition">Тренировки</a></li>
+            <li><a href="contacts.html" class="text-gray-400 hover:text-white transition">Контакты</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Контакты</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> г. Москва, ул. Спортивная, 15</li>
+            <li class="flex items-center"><i class="fas fa-phone mr-2"></i> +7 (999) 123-45-67</li>
+            <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> info@pingpongclub.ru</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold mb-4">Подписка на новости</h4>
+          <div class="flex">
+            <input type="email" placeholder="Ваш email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-800">
+            <button class="bg-pingpong-orange px-4 py-2 rounded-r-lg hover:bg-orange-600 transition">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+          <p class="text-gray-400 text-sm mt-2">Узнавайте первым о новых турнирах и акциях</p>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2025 PingPong Club. Все права защищены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Скрипт для формы обратной связи и авторизации -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Обработка формы обратной связи
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          subject: document.getElementById('subject').value,
+          message: document.getElementById('message').value,
+          timestamp: new Date().toISOString()
+        };
+
+        try {
+          // Сохраняем в Firebase
+          await push(ref(db, 'Contacts'), formData);
+          
+          // Показываем уведомление об успехе
+          alert('Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
+          contactForm.reset();
+          
+        } catch (error) {
+          console.error('Ошибка отправки:', error);
+          alert('Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.');
+        }
+      });
+    }
+
+    // Управление авторизацией
+    onAuthStateChanged(auth, (user) => {
+      const authButton = document.querySelector('a[href="authorization.html"]');
+      
+      if (user) {
+        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+        authButton.href = "#";
+        
+        let logoutBtn = document.getElementById('logoutButton');
+        if (!logoutBtn) {
+          logoutBtn = document.createElement('a');
+          logoutBtn.id = 'logoutButton';
+          logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
+          logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
+          logoutBtn.href = "#";
+          logoutBtn.onclick = async () => {
+            await signOut(auth);
+            window.location.reload();
+          };
+          authButton.parentNode.appendChild(logoutBtn);
+        }
+      } else {
+        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+        authButton.href = "authorization.html";
+        
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) logoutBtn.remove();
+      }
+    });
+
+    // Добавляем интерактивность для карточек
+    document.querySelectorAll('.contact-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-5px)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+
+</body>
+</html>
