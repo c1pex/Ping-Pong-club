@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Личный кабинет | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'montserrat': ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            'pingpong-blue': '#1e40af',
+            'pingpong-orange': '#ea580c',
+            'pingpong-green': '#10b981',
+            'pingpong-purple': '#8b5cf6'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .profile-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .profile-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .tab-active {
+      background-color: #1e40af;
+      color: white;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-montserrat">
+
+  <!-- Навигация -->
+  <header class="bg-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold flex items-center space-x-2 text-pingpong-blue">
+        <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange"></i>
+        <span>PingPong Club</span>
+      </a>
+      <nav class="hidden md:flex space-x-8">
+        <a href="index.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Главная</a>
+        <a href="about.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">О нас</a>
+        <a href="tournaments.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Турниры</a>
+        <a href="training.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Тренировки</a>
+        <a href="contacts.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Контакты</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="profile.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
+          <i class="fas fa-user mr-2"></i>Личный кабинет
+        </a>
+        <button class="md:hidden text-gray-600">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Хлебные крошки -->
+  <nav class="bg-gray-100 py-4">
+    <div class="max-w-7xl mx-auto px-4">
+      <ol class="flex items-center space-x-2 text-sm">
+        <li>
+          <a href="index.html" class="text-pingpong-blue hover:text-pingpong-orange transition">
+            <i class="fas fa-home mr-1"></i>Главная
+          </a>
+        </li>
+        <li class="flex items-center">
+          <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+        </li>
+        <li class="text-gray-600">
+          <span>Личный кабинет</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Основной контент -->
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- Боковая панель -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+          <div class="text-center mb-6">
+            <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
+              <img id="userAvatar" src="https://via.placeholder.com/150" alt="Аватар" class="w-full h-full object-cover">
+            </div>
+            <h2 id="userName" class="text-xl font-bold">Иван Иванов</h2>
+            <p id="userLevel" class="text-pingpong-orange font-medium">Начинающий</p>
+          </div>
+          
+          <nav class="space-y-2">
+            <button class="tab-btn w-full text-left px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition tab-active" data-tab="profile">
+              <i class="fas fa-user-circle mr-3"></i>Мой профиль
+            </button>
+            <button class="tab-btn w-full text-left px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition" data-tab="tournaments">
+              <i class="fas fa-trophy mr-3"></i>Мои турниры
+            </button>
+            <button class="tab-btn w-full text-left px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition" data-tab="trainings">
+              <i class="fas fa-calendar-alt mr-3"></i>Мои тренировки
+            </button>
+            <button class="tab-btn w-full text-left px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition" data-tab="statistics">
+              <i class="fas fa-chart-line mr-3"></i>Статистика
+            </button>
+            <button class="w-full text-left px-4 py-3 rounded-lg font-medium hover:bg-gray-100 transition text-red-600" id="logoutBtn">
+              <i class="fas fa-sign-out-alt mr-3"></i>Выйти
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Основная область -->
+      <div class="lg:col-span-3">
+        
+        <!-- Вкладка профиля -->
+        <div id="profileTab" class="tab-content">
+          <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-6">Мой профиль</h2>
+            
+            <form id="profileForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Имя и фамилия</label>
+                <input type="text" id="profileName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input type="email" id="profileEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue" readonly>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
+                <input type="tel" id="profilePhone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Дата рождения</label>
+                <input type="date" id="profileBirthDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Уровень подготовки</label>
+                <select id="profileLevel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pingpong-blue">
+                  <option value="beginner">Начинающий</option>
+                  <option value="intermediate">Продолжающий</option>
+                  <option value="advanced">Продвинутый</option>
+                  <option value="pro">Профессионал</option>
+                </select>
+              </div>
+              
+              <div class="md:col-span-2">
+                <button type="submit" class="bg-pingpong-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition">
+                  Сохранить изменения
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Вкладка турниров -->
+        <div id="tournamentsTab" class="tab-content hidden">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-6">Мои турниры</h2>
+            <div id="tournamentsList">
+              <!-- Турниры будут загружены через JavaScript -->
+              <p class="text-gray-500 text-center py-8">У вас пока нет участия в турнирах</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка тренировок -->
+        <div id="trainingsTab" class="tab-content hidden">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-6">Мои тренировки</h2>
+            <div id="trainingsList">
+              <!-- Тренировки будут загружены через JavaScript -->
+              <p class="text-gray-500 text-center py-8">У вас пока нет запланированных тренировок</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка статистики -->
+        <div id="statisticsTab" class="tab-content hidden">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-6">Моя статистика</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div class="stat-card text-white rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold" id="totalMatches">0</div>
+                <div class="text-sm">Всего матчей</div>
+              </div>
+              <div class="bg-green-500 text-white rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold" id="winRate">0%</div>
+                <div class="text-sm">Процент побед</div>
+              </div>
+              <div class="bg-blue-500 text-white rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold" id="currentStreak">0</div>
+                <div class="text-sm">Текущая серия</div>
+              </div>
+              <div class="bg-purple-500 text-white rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold" id="bestStreak">0</div>
+                <div class="text-sm">Лучшая серия</div>
+              </div>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+              <h3 class="text-lg font-bold mb-4">Прогресс по месяцам</h3>
+              <div class="h-48 flex items-end justify-between space-x-2">
+                <!-- График будет построен через JavaScript -->
+                <div class="text-center">
+                  <div class="bg-pingpong-blue rounded-t w-8 mx-auto" style="height: 40%"></div>
+                  <div class="text-xs mt-1">Янв</div>
+                </div>
+                <!-- Добавьте больше месяцев -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Подвал -->
+  <footer class="bg-gray-900 text-white py-12 mt-12">
+    <!-- Ваш существующий footer код -->
+  </footer>
+
+  <script type="module">
+    // JavaScript код для личного кабинета
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Управление вкладками
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const tabId = button.getAttribute('data-tab');
+        
+        // Убираем активный класс у всех кнопок
+        tabButtons.forEach(btn => btn.classList.remove('tab-active', 'bg-pingpong-blue', 'text-white'));
+        // Добавляем активный класс текущей кнопке
+        button.classList.add('tab-active', 'bg-pingpong-blue', 'text-white');
+        
+        // Скрываем все вкладки
+        tabContents.forEach(content => content.classList.add('hidden'));
+        // Показываем текущую вкладку
+        document.getElementById(`${tabId}Tab`).classList.remove('hidden');
+      });
+    });
+
+    // Загрузка данных пользователя
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await loadUserData(user.uid);
+      } else {
+        // Если пользователь не авторизован, перенаправляем на страницу входа
+        window.location.href = 'authorization.html';
+      }
+    });
+
+    async function loadUserData(userId) {
+      try {
+        const userRef = ref(db, `Users/${userId}`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          displayUserData(userData);
+        } else {
+          // Создаем запись пользователя, если она не существует
+          await createUserProfile(userId);
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+      }
+    }
+
+    function displayUserData(userData) {
+      // Заполняем профиль
+      if (userData.profile) {
+        document.getElementById('userName').textContent = userData.profile.name || 'Пользователь';
+        document.getElementById('profileName').value = userData.profile.name || '';
+        document.getElementById('profileEmail').value = userData.profile.email || '';
+        document.getElementById('profilePhone').value = userData.profile.phone || '';
+        document.getElementById('profileBirthDate').value = userData.profile.birthDate || '';
+        document.getElementById('profileLevel').value = userData.profile.level || 'beginner';
+        document.getElementById('userLevel').textContent = getLevelText(userData.profile.level);
+      }
+
+      // Заполняем статистику
+      if (userData.statistics) {
+        document.getElementById('totalMatches').textContent = userData.statistics.totalMatches || 0;
+        document.getElementById('winRate').textContent = `${userData.statistics.winRate || 0}%`;
+        document.getElementById('currentStreak').textContent = userData.statistics.currentStreak || 0;
+        document.getElementById('bestStreak').textContent = userData.statistics.bestStreak || 0;
+      }
+
+      // Заполняем турниры и тренировки
+      displayTournaments(userData.tournaments);
+      displayTrainings(userData.trainings);
+    }
+
+    function getLevelText(level) {
+      const levels = {
+        'beginner': 'Начинающий',
+        'intermediate': 'Продолжающий',
+        'advanced': 'Продвинутый',
+        'pro': 'Профессионал'
+      };
+      return levels[level] || 'Начинающий';
+    }
+
+    function displayTournaments(tournaments) {
+      const container = document.getElementById('tournamentsList');
+      if (!tournaments || Object.keys(tournaments).length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">У вас пока нет участия в турнирах</p>';
+        return;
+      }
+
+      // Здесь будет код для отображения турниров
+    }
+
+    function displayTrainings(trainings) {
+      const container = document.getElementById('trainingsList');
+      if (!trainings || Object.keys(trainings).length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">У вас пока нет запланированных тренировок</p>';
+        return;
+      }
+
+      // Здесь будет код для отображения тренировок
+    }
+
+    // Обработка формы профиля
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const profileData = {
+        name: document.getElementById('profileName').value,
+        phone: document.getElementById('profilePhone').value,
+        birthDate: document.getElementById('profileBirthDate').value,
+        level: document.getElementById('profileLevel').value,
+        email: user.email
+      };
+
+      try {
+        await set(ref(db, `Users/${user.uid}/profile`), profileData);
+        alert('Профиль успешно обновлен!');
+      } catch (error) {
+        console.error('Ошибка сохранения:', error);
+        alert('Ошибка при сохранении профиля');
+      }
+    });
+
+    // Выход из системы
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    });
+
+    async function createUserProfile(userId) {
+      const user = auth.currentUser;
+      const profileData = {
+        name: user.displayName || 'Пользователь',
+        email: user.email,
+        phone: '',
+        birthDate: '',
+        level: 'beginner',
+        joinDate: new Date().toISOString().split('T')[0]
+      };
+
+      await set(ref(db, `Users/${userId}/profile`), profileData);
+      await loadUserData(userId);
+    }
+  </script>
+
+</body>
+</html>

@@ -369,95 +369,91 @@
   </footer>
 
   <!-- Скрипт для формы обратной связи и авторизации -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+  <!-- Скрипт для управления авторизацией -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
-      authDomain: "tennizov.firebaseapp.com",
-      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
-      projectId: "tennizov",
-      storageBucket: "tennizov.appspot.com",
-      messagingSenderId: "194989527761",
-      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+    authDomain: "tennizov.firebaseapp.com",
+    databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+    projectId: "tennizov",
+    storageBucket: "tennizov.appspot.com",
+    messagingSenderId: "194989527761",
+    appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    // Обработка формы обратной связи
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-      contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = {
-          name: document.getElementById('name').value,
-          email: document.getElementById('email').value,
-          phone: document.getElementById('phone').value,
-          subject: document.getElementById('subject').value,
-          message: document.getElementById('message').value,
-          timestamp: new Date().toISOString()
+  // Функция для проверки авторизации и перехода в профиль
+  function goToProfile() {
+    const user = auth.currentUser;
+    if (user) {
+      window.location.href = 'profile.html';
+    } else {
+      window.location.href = 'authorization.html';
+    }
+  }
+
+  // Обновляем навигацию в зависимости от состояния авторизации
+  onAuthStateChanged(auth, (user) => {
+    const authButton = document.querySelector('a[href="profile.html"]') || 
+                      document.querySelector('a[href="authorization.html"]') ||
+                      document.querySelector('.auth-button');
+    
+    if (user) {
+      // Пользователь вошел - меняем кнопку
+      authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+      authButton.href = "profile.html";
+      authButton.onclick = null;
+      
+      // Создаем кнопку выхода
+      let logoutBtn = document.getElementById('logoutButton');
+      if (!logoutBtn) {
+        logoutBtn = document.createElement('a');
+        logoutBtn.id = 'logoutButton';
+        logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
+        logoutBtn.href = "#";
+        logoutBtn.onclick = async () => {
+          await signOut(auth);
+          window.location.reload();
         };
+        authButton.parentNode.appendChild(logoutBtn);
+      }
+    } else {
+      // Пользователь не вошел - стандартная кнопка входа
+      authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+      authButton.href = "authorization.html";
+      authButton.onclick = null;
+      
+      // Удаляем кнопку выхода если есть
+      const logoutBtn = document.getElementById('logoutButton');
+      if (logoutBtn) {
+        logoutBtn.remove();
+      }
+    }
+  });
 
-        try {
-          // Сохраняем в Firebase
-          await push(ref(db, 'Contacts'), formData);
-          
-          // Показываем уведомление об успехе
-          alert('Спасибо! Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время.');
-          contactForm.reset();
-          
-        } catch (error) {
-          console.error('Ошибка отправки:', error);
-          alert('Произошла ошибка при отправке сообщения. Пожалуйста, попробуйте еще раз.');
+  // Обработчик клика по кнопке профиля/входа
+  document.addEventListener('DOMContentLoaded', function() {
+    const authButton = document.querySelector('a[href="profile.html"]') || 
+                      document.querySelector('a[href="authorization.html"]');
+    
+    if (authButton) {
+      authButton.addEventListener('click', function(e) {
+        const user = auth.currentUser;
+        if (!user) {
+          e.preventDefault();
+          window.location.href = 'authorization.html';
         }
+        // Если пользователь авторизован, переход на profile.html произойдет автоматически
       });
     }
-
-    // Управление авторизацией
-    onAuthStateChanged(auth, (user) => {
-      const authButton = document.querySelector('a[href="authorization.html"]');
-      
-      if (user) {
-        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
-        authButton.href = "#";
-        
-        let logoutBtn = document.getElementById('logoutButton');
-        if (!logoutBtn) {
-          logoutBtn = document.createElement('a');
-          logoutBtn.id = 'logoutButton';
-          logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
-          logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
-          logoutBtn.href = "#";
-          logoutBtn.onclick = async () => {
-            await signOut(auth);
-            window.location.reload();
-          };
-          authButton.parentNode.appendChild(logoutBtn);
-        }
-      } else {
-        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
-        authButton.href = "authorization.html";
-        
-        const logoutBtn = document.getElementById('logoutButton');
-        if (logoutBtn) logoutBtn.remove();
-      }
-    });
-
-    // Добавляем интерактивность для карточек
-    document.querySelectorAll('.contact-card').forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-5px)';
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0)';
-      });
-    });
-  </script>
+  });
+</script>
 
 </body>
 </html>

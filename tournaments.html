@@ -77,14 +77,13 @@
         <a href="training.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Тренировки</a>
         <a href="contacts.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Контакты</a>
       </nav>
-      <div class="flex items-center space-x-4">
-        <a href="authorization.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
-          <i class="fas fa-sign-in-alt mr-2"></i>Вход
-        </a>
-        <button class="md:hidden text-gray-600">
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-      </div>
+     <div class="flex items-center space-x-4">
+      <a href="profile.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium auth-button">
+        <i class="fas fa-user mr-2"></i>Профиль
+      </a>
+      <button class="md:hidden text-gray-600">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
     </div>
   </header>
 
@@ -261,6 +260,7 @@
   </footer>
 
   <!-- СКРИПТ ДЛЯ ЗАГРУЗКИ ТУРНИРОВ ИЗ БАЗЫ ДАННЫХ -->
+   
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
@@ -408,34 +408,7 @@
     }
 
     // Управление авторизацией (аналогично другим страницам)
-    onAuthStateChanged(auth, (user) => {
-      const authButton = document.querySelector('a[href="authorization.html"]');
-      
-      if (user) {
-        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
-        authButton.href = "#";
-        
-        let logoutBtn = document.getElementById('logoutButton');
-        if (!logoutBtn) {
-          logoutBtn = document.createElement('a');
-          logoutBtn.id = 'logoutButton';
-          logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
-          logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
-          logoutBtn.href = "#";
-          logoutBtn.onclick = async () => {
-            await signOut(auth);
-            window.location.reload();
-          };
-          authButton.parentNode.appendChild(logoutBtn);
-        }
-      } else {
-        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
-        authButton.href = "authorization.html";
-        
-        const logoutBtn = document.getElementById('logoutButton');
-        if (logoutBtn) logoutBtn.remove();
-      }
-    });
+  
 
     // Загружаем турниры при загрузке страницы
     loadTournaments();

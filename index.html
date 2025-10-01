@@ -175,63 +175,91 @@
   </footer>
 
   <!-- ОБЪЕДИНЕННЫЙ СКРИПТ ДЛЯ НОВОСТЕЙ И АВТОРИЗАЦИИ ЧТОБЫ НЕ БЫЛО ИНИЦИАЛИЗАЦИИ 2 РАЗА-->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+  <!-- Скрипт для управления авторизацией -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
-      authDomain: "tennizov.firebaseapp.com",
-      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
-      projectId: "tennizov",
-      storageBucket: "tennizov.appspot.com",
-      messagingSenderId: "194989527761",
-      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+    authDomain: "tennizov.firebaseapp.com",
+    databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+    projectId: "tennizov",
+    storageBucket: "tennizov.appspot.com",
+    messagingSenderId: "194989527761",
+    appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+  };
 
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Функция для проверки авторизации и перехода в профиль
+  function goToProfile() {
+    const user = auth.currentUser;
+    if (user) {
+      window.location.href = 'profile.html';
+    } else {
+      window.location.href = 'authorization.html';
+    }
+  }
+
+  // Обновляем навигацию в зависимости от состояния авторизации
+  onAuthStateChanged(auth, (user) => {
+    const authButton = document.querySelector('a[href="profile.html"]') || 
+                      document.querySelector('a[href="authorization.html"]') ||
+                      document.querySelector('.auth-button');
     
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const auth = getAuth(app);
-    const newsList = document.getElementById("newsList");
-
-    // Функция загрузки новостей
-    async function loadNews() {
-      try {
-        const snapshot = await get(ref(db, "News"));
-        const data = snapshot.val();
-        
-        if (!data) {
-          newsList.innerHTML = '<p class="text-center col-span-3 text-gray-500">Новостей пока нет. Зайдите позже!</p>';
-          return;
-        }
-
-        const sorted = Object.values(data).sort((a, b) => b.Date.localeCompare(a.Date));
-
-        for (const item of sorted) {
-          const imageUrl = item.Image || "";
-
-          const card = document.createElement("div");
-          card.className = "p-4 md:w-1/3";
-
-          card.innerHTML = `
-            <div class="h-full bg-white rounded-lg overflow-hidden shadow-lg pingpong-card">
-              ${imageUrl ? `<img class="lg:h-48 md:h-36 w-full object-cover" src="${imageUrl}" alt="${item.Heading}" onerror="this.style.display='none'">` : ""}
-              <div class="p-6">
-                <h3 class="text-xl font-bold mb-2 text-gray-900">${item.Heading}</h3>
-                <p class="text-sm text-gray-500 mb-1">${item.Date}</p>
-                <p class="text-base text-gray-700 mb-3">${item.Content}</p>
-              </div>
-            </div>
-          `;
-          newsList.appendChild(card);
-        }
-      } catch (error) {
-        console.error("Ошибка загрузки новостей:", error);
-        newsList.innerHTML = '<p class="text-center col-span-3 text-red-500">Произошла ошибка при загрузке новостей.</p>';
+    if (user) {
+      // Пользователь вошел - меняем кнопку
+      authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+      authButton.href = "profile.html";
+      authButton.onclick = null;
+      
+      // Создаем кнопку выхода
+      let logoutBtn = document.getElementById('logoutButton');
+      if (!logoutBtn) {
+        logoutBtn = document.createElement('a');
+        logoutBtn.id = 'logoutButton';
+        logoutBtn.className = 'bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 ml-2 text-white';
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt mr-2"></i>Выйти';
+        logoutBtn.href = "#";
+        logoutBtn.onclick = async () => {
+          await signOut(auth);
+          window.location.reload();
+        };
+        authButton.parentNode.appendChild(logoutBtn);
+      }
+    } else {
+      // Пользователь не вошел - стандартная кнопка входа
+      authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+      authButton.href = "authorization.html";
+      authButton.onclick = null;
+      
+      // Удаляем кнопку выхода если есть
+      const logoutBtn = document.getElementById('logoutButton');
+      if (logoutBtn) {
+        logoutBtn.remove();
       }
     }
+  });
+
+  // Обработчик клика по кнопке профиля/входа
+  document.addEventListener('DOMContentLoaded', function() {
+    const authButton = document.querySelector('a[href="profile.html"]') || 
+                      document.querySelector('a[href="authorization.html"]');
+    
+    if (authButton) {
+      authButton.addEventListener('click', function(e) {
+        const user = auth.currentUser;
+        if (!user) {
+          e.preventDefault();
+          window.location.href = 'authorization.html';
+        }
+        // Если пользователь авторизован, переход на profile.html произойдет автоматически
+      });
+    }
+  });
+
 
     // Функция управления авторизацией
     function setupAuth() {
