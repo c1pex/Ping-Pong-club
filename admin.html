@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Админ-панель | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+    .admin-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .admin-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex h-screen">
+  <!-- Боковая панель -->
+  <div class="sidebar bg-gray-800 text-white w-64 flex flex-col">
+    <div class="p-6 border-b border-gray-700">
+      <h1 class="text-xl font-bold flex items-center">
+        <i class="fas fa-cogs mr-2 text-blue-400"></i>
+        Админ-панель
+      </h1>
+      <p class="text-gray-400 text-sm mt-1">PingPong Club</p>
+    </div>
+
+    <nav class="flex-1 p-4">
+      <ul class="space-y-2">
+        <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition active" data-tab="dashboard">
+            <i class="fas fa-tachometer-alt mr-3"></i>
+            Дашборд
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="news">
+            <i class="fas fa-newspaper mr-3"></i>
+            Новости
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="tournaments">
+            <i class="fas fa-trophy mr-3"></i>
+            Турниры
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="users">
+            <i class="fas fa-users mr-3"></i>
+            Пользователи
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="messages">
+            <i class="fas fa-envelope mr-3"></i>
+            Сообщения
+            <span id="unreadCount" class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1 hidden">0</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="settings">
+            <i class="fas fa-cog mr-3"></i>
+            Настройки
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="p-4 border-t border-gray-700">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+          <i class="fas fa-user text-white"></i>
+        </div>
+        <div>
+          <p id="adminName" class="font-medium">Администратор</p>
+          <p class="text-gray-400 text-sm">admin@pingpongclub.ru</p>
+        </div>
+      </div>
+      <a href="index.html" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg flex items-center justify-center transition">
+        <i class="fas fa-sign-out-alt mr-2"></i>На сайт
+      </a>
+    </div>
+  </div>
+
+  <!-- Основной контент -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Шапка -->
+    <header class="bg-white shadow-sm border-b px-6 py-4">
+      <div class="flex justify-between items-center">
+        <h2 id="pageTitle" class="text-2xl font-bold text-gray-800">Дашборд</h2>
+        <div class="flex items-center space-x-4">
+          <div class="text-sm text-gray-600">
+            <i class="fas fa-clock mr-1"></i>
+            <span id="currentTime"></span>
+          </div>
+          <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Контент -->
+    <div class="flex-1 overflow-y-auto p-6">
+      
+      <!-- Дашборд -->
+      <div id="dashboard" class="tab-content active">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="stat-card text-white rounded-xl p-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-blue-200">Всего пользователей</p>
+                <p class="text-3xl font-bold mt-2" id="totalUsers">0</p>
+              </div>
+              <i class="fas fa-users text-2xl opacity-50"></i>
+            </div>
+          </div>
+          <div class="bg-green-500 text-white rounded-xl p-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-green-200">Активных турниров</p>
+                <p class="text-3xl font-bold mt-2" id="activeTournaments">0</p>
+              </div>
+              <i class="fas fa-trophy text-2xl opacity-50"></i>
+            </div>
+          </div>
+          <div class="bg-purple-500 text-white rounded-xl p-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-purple-200">Новых сообщений</p>
+                <p class="text-3xl font-bold mt-2" id="newMessages">0</p>
+              </div>
+              <i class="fas fa-envelope text-2xl opacity-50"></i>
+            </div>
+          </div>
+          <div class="bg-orange-500 text-white rounded-xl p-6">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-orange-200">Записей на тренировки</p>
+                <p class="text-3xl font-bold mt-2" id="trainingBookings">0</p>
+              </div>
+              <i class="fas fa-calendar-check text-2xl opacity-50"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold mb-4">Статистика посещений</h3>
+            <canvas id="visitsChart" height="250"></canvas>
+          </div>
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-bold mb-4">Последние действия</h3>
+            <div id="recentActivity" class="space-y-3">
+              <!-- Активность будет загружена -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Управление новостями -->
+      <div id="news" class="tab-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold">Управление новостями</h3>
+          <button id="addNewsBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <i class="fas fa-plus mr-2"></i>Добавить новость
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Заголовок</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="newsTable" class="divide-y divide-gray-200">
+              <!-- Новости будут загружены -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Модальное окно для добавления/редактирования новости -->
+        <div id="newsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+          <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4">
+            <h3 class="text-xl font-bold mb-4" id="newsModalTitle">Добавить новость</h3>
+            <form id="newsForm" class="space-y-4">
+              <input type="hidden" id="newsId">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Заголовок</label>
+                <input type="text" id="newsTitle" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Содержание</label>
+                <textarea id="newsContent" required rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Изображение (URL)</label>
+                <input type="url" id="newsImage" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeNewsModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Отмена</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Сохранить</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Управление турнирами -->
+      <div id="tournaments" class="tab-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold">Управление турнирами</h3>
+          <button id="addTournamentBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            <i class="fas fa-plus mr-2"></i>Добавить турнир
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Название</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Даты</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Участники</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="tournamentsTable" class="divide-y divide-gray-200">
+              <!-- Турниры будут загружены -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Модальное окно для турниров -->
+        <div id="tournamentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+          <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-bold mb-4" id="tournamentModalTitle">Добавить турнир</h3>
+            <form id="tournamentForm" class="space-y-4">
+              <input type="hidden" id="tournamentId">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Название</label>
+                  <input type="text" id="tournamentName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Локация</label>
+                  <input type="text" id="tournamentLocation" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Дата начала</label>
+                  <input type="date" id="tournamentStartDate" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Дата окончания</label>
+                  <input type="date" id="tournamentEndDate" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+                <textarea id="tournamentDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Взнос (₽)</label>
+                  <input type="number" id="tournamentFee" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Макс. участников</label>
+                  <input type="number" id="tournamentParticipants" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+              <div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="closeTournamentModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Отмена</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Сохранить</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Управление пользователями -->
+      <div id="users" class="tab-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold">Управление пользователями</h3>
+          <div class="flex space-x-2">
+            <input type="text" id="userSearch" placeholder="Поиск пользователей..." class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Пользователь</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Телефон</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Уровень</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата регистрации</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable" class="divide-y divide-gray-200">
+              <!-- Пользователи будут загружены -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Сообщения -->
+      <div id="messages" class="tab-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold">Сообщения от пользователей</h3>
+          <button id="markAllRead" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+            <i class="fas fa-check-double mr-2"></i>Отметить все как прочитанные
+          </button>
+        </div>
+
+        <div class="space-y-4" id="messagesList">
+          <!-- Сообщения будут загружены -->
+        </div>
+      </div>
+
+      <!-- Настройки -->
+      <div id="settings" class="tab-content">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-2xl font-bold mb-6">Настройки системы</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 class="text-lg font-semibold mb-4">Основные настройки</h4>
+              <form class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Название клуба</label>
+                  <input type="text" value="PingPong Club" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Email для уведомлений</label>
+                  <input type="email" value="admin@pingpongclub.ru" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Телефон для связи</label>
+                  <input type="tel" value="+7 (999) 123-45-67" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Сохранить настройки</button>
+              </form>
+            </div>
+
+            <div>
+              <h4 class="text-lg font-semibold mb-4">Уведомления</h4>
+              <div class="space-y-3">
+                <label class="flex items-center">
+                  <input type="checkbox" checked class="rounded text-blue-600">
+                  <span class="ml-2">Уведомления о новых сообщениях</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" checked class="rounded text-blue-600">
+                  <span class="ml-2">Уведомления о регистрациях</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded text-blue-600">
+                  <span class="ml-2">Ежедневная статистика</span>
+                </label>
+              </div>
+
+              <h4 class="text-lg font-semibold mt-6 mb-4">Резервное копирование</h4>
+              <div class="space-y-3">
+                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                  <i class="fas fa-download mr-2"></i>Создать резервную копию
+                </button>
+                <button class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 transition">
+                  <i class="fas fa-upload mr-2"></i>Восстановить из копии
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Подключаем Flatpickr -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+
+  <!-- Основной скрипт админ-панели -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Проверка прав администратора
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'authorization.html';
+        return;
+      }
+
+      // Проверяем, является ли пользователь администратором
+      const userRef = ref(db, `Users/${user.uid}/profile/role`);
+      const snapshot = await get(userRef);
+      
+      if (!snapshot.exists() || snapshot.val() !== 'admin') {
+        alert('У вас нет прав доступа к админ-панели');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Загружаем данные админ-панели
+      loadAdminData();
+      initEventListeners();
+    });
+
+    function loadAdminData() {
+      loadDashboardStats();
+      loadNews();
+      loadTournaments();
+      loadUsers();
+      loadMessages();
+    }
+
+    function initEventListeners() {
+      // Навигация
+      document.querySelectorAll('.admin-nav').forEach(nav => {
+        nav.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = nav.getAttribute('data-tab');
+          switchTab(tab);
+        });
+      });
+
+      // Кнопки добавления
+      document.getElementById('addNewsBtn').addEventListener('click', () => openNewsModal());
+      document.getElementById('addTournamentBtn').addEventListener('click', () => openTournamentModal());
+
+      // Формы
+      document.getElementById('newsForm').addEventListener('submit', handleNewsSubmit);
+      document.getElementById('tournamentForm').addEventListener('submit', handleTournamentSubmit);
+
+      // Поиск
+      document.getElementById('userSearch').addEventListener('input', filterUsers);
+    }
+
+    function switchTab(tabName) {
+      // Обновляем активную навигацию
+      document.querySelectorAll('.admin-nav').forEach(nav => {
+        nav.classList.remove('active', 'bg-gray-700');
+      });
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active', 'bg-gray-700');
+
+      // Обновляем активный контент
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(tabName).classList.add('active');
+
+      // Обновляем заголовок
+      const titles = {
+        dashboard: 'Дашборд',
+        news: 'Управление новостями',
+        tournaments: 'Управление турнирами',
+        users: 'Управление пользователями',
+        messages: 'Сообщения от пользователей',
+        settings: 'Настройки системы'
+      };
+      document.getElementById('pageTitle').textContent = titles[tabName];
+    }
+
+    // Загрузка статистики для дашборда
+    async function loadDashboardStats() {
+      // Пользователи
+      const usersSnapshot = await get(ref(db, 'Users'));
+      document.getElementById('totalUsers').textContent = usersSnapshot.exists() ? Object.keys(usersSnapshot.val()).length : 0;
+
+      // Турниры
+      const tournamentsSnapshot = await get(ref(db, 'Tournaments'));
+      if (tournamentsSnapshot.exists()) {
+        const tournaments = Object.values(tournamentsSnapshot.val());
+        const activeTournaments = tournaments.filter(t => {
+          const now = new Date();
+          const start = new Date(t.startDate);
+          const end = new Date(t.endDate);
+          return now >= start && now <= end;
+        });
+        document.getElementById('activeTournaments').textContent = activeTournaments.length;
+      }
+
+      // Сообщения
+      const messagesSnapshot = await get(ref(db, 'Contacts'));
+      document.getElementById('newMessages').textContent = messagesSnapshot.exists() ? Object.keys(messagesSnapshot.val()).length : 0;
+
+      // Инициализация графика
+      initVisitsChart();
+    }
+
+    function initVisitsChart() {
+      const ctx = document.getElementById('visitsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+          datasets: [{
+            label: 'Посещения',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Управление новостями
+    async function loadNews() {
+      const snapshot = await get(ref(db, 'News'));
+      const table = document.getElementById('newsTable');
+      table.innerHTML = '';
+
+      if (!snapshot.exists()) {
+        table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Новостей пока нет</td></tr>';
+        return;
+      }
+
+      const news = Object.entries(snapshot.val()).sort((a, b) => new Date(b[1].Date) - new Date(a[1].Date));
+
+      news.forEach(([id, item]) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-medium text-gray-900">${item.Heading}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.Date}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Активна</span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="editNews('${id}')" class="text-blue-600 hover:text-blue-900 mr-3">Редактировать</button>
+            <button onclick="deleteNews('${id}')" class="text-red-600 hover:text-red-900">Удалить</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function openNewsModal(newsId = null) {
+      const modal = document.getElementById('newsModal');
+      const title = document.getElementById('newsModalTitle');
+      
+      if (newsId) {
+        title.textContent = 'Редактировать новость';
+        // Загружаем данные новости
+        loadNewsData(newsId);
+      } else {
+        title.textContent = 'Добавить новость';
+        document.getElementById('newsForm').reset();
+        document.getElementById('newsId').value = '';
+      }
+      
+      modal.classList.remove('hidden');
+    }
+
+    async function loadNewsData(newsId) {
+      const snapshot = await get(ref(db, `News/${newsId}`));
+      if (snapshot.exists()) {
+        const news = snapshot.val();
+        document.getElementById('newsId').value = newsId;
+        document.getElementById('newsTitle').value = news.Heading;
+        document.getElementById('newsContent').value = news.Content;
+        document.getElementById('newsImage').value = news.Image || '';
+      }
+    }
+
+    function closeNewsModal() {
+      document.getElementById('newsModal').classList.add('hidden');
+    }
+
+    async function handleNewsSubmit(e) {
+      e.preventDefault();
+      
+      const newsId = document.getElementById('newsId').value;
+      const newsData = {
+        Heading: document.getElementById('newsTitle').value,
+        Content: document.getElementById('newsContent').value,
+        Date: new Date().toISOString().split('T')[0],
+        Image: document.getElementById('newsImage').value || ''
+      };
+
+      try {
+        if (newsId) {
+          // Редактирование
+          await set(ref(db, `News/${newsId}`), newsData);
+        } else {
+          // Добавление
+          await push(ref(db, 'News'), newsData);
+        }
+        
+        closeNewsModal();
+        loadNews();
+        showNotification('Новость успешно сохранена!', 'success');
+      } catch (error) {
+        showNotification('Ошибка при сохранении новости', 'error');
+      }
+    }
+
+    async function deleteNews(newsId) {
+      if (confirm('Вы уверены, что хотите удалить эту новость?')) {
+        try {
+          await remove(ref(db, `News/${newsId}`));
+          loadNews();
+          showNotification('Новость удалена!', 'success');
+        } catch (error) {
+          showNotification('Ошибка при удалении новости', 'error');
+        }
+      }
+    }
+
+    // Управление турнирами
+    async function loadTournaments() {
+      const snapshot = await get(ref(db, 'Tournaments'));
+      const table = document.getElementById('tournamentsTable');
+      table.innerHTML = '';
+
+      if (!snapshot.exists()) {
+        table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Турниров пока нет</td></tr>';
+        return;
+      }
+
+      const tournaments = Object.entries(snapshot.val());
+
+      tournaments.forEach(([id, tournament]) => {
+        const status = getTournamentStatus(tournament.startDate, tournament.endDate);
+        const statusColors = {
+          upcoming: 'bg-blue-100 text-blue-800',
+          active: 'bg-green-100 text-green-800',
+          completed: 'bg-gray-100 text-gray-800'
+        };
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-medium text-gray-900">${tournament.name}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            ${tournament.startDate} - ${tournament.endDate}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            ${tournament.participants || 0}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 py-1 text-xs rounded-full ${statusColors[status]}">${getStatusText(status)}</span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="editTournament('${id}')" class="text-blue-600 hover:text-blue-900 mr-3">Редактировать</button>
+            <button onclick="deleteTournament('${id}')" class="text-red-600 hover:text-red-900">Удалить</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function getTournamentStatus(startDate, endDate) {
+      const now = new Date();
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      
+      if (now < start) return 'upcoming';
+      if (now >= start && now <= end) return 'active';
+      return 'completed';
+    }
+
+    function getStatusText(status) {
+      const texts = {
+        upcoming: 'Предстоящий',
+        active: 'Активный',
+        completed: 'Завершен'
+      };
+      return texts[status];
+    }
+
+    function openTournamentModal(tournamentId = null) {
+      const modal = document.getElementById('tournamentModal');
+      const title = document.getElementById('tournamentModalTitle');
+      
+      if (tournamentId) {
+        title.textContent = 'Редактировать турнир';
+        loadTournamentData(tournamentId);
+      } else {
+        title.textContent = 'Добавить турнир';
+        document.getElementById('tournamentForm').reset();
+        document.getElementById('tournamentId').value = '';
+      }
+      
+      modal.classList.remove('hidden');
+    }
+
+    async function loadTournamentData(tournamentId) {
+      const snapshot = await get(ref(db, `Tournaments/${tournamentId}`));
+      if (snapshot.exists()) {
+        const tournament = snapshot.val();
+        document.getElementById('tournamentId').value = tournamentId;
+        document.getElementById('tournamentName').value = tournament.name || '';
+        document.getElementById('tournamentLocation').value = tournament.location || '';
+        document.getElementById('tournamentStartDate').value = tournament.startDate || '';
+        document.getElementById('tournamentEndDate').value = tournament.endDate || '';
+        document.getElementById('tournamentDescription').value = tournament.description || '';
+        document.getElementById('tournamentFee').value = tournament.fee || '';
+        document.getElementById('tournamentParticipants').value = tournament.participants || '';
+      }
+    }
+
+    function closeTournamentModal() {
+      document.getElementById('tournamentModal').classList.add('hidden');
+    }
+
+    async function handleTournamentSubmit(e) {
+      e.preventDefault();
+      
+      const tournamentId = document.getElementById('tournamentId').value;
+      const tournamentData = {
+        name: document.getElementById('tournamentName').value,
+        location: document.getElementById('tournamentLocation').value,
+        startDate: document.getElementById('tournamentStartDate').value,
+        endDate: document.getElementById('tournamentEndDate').value,
+        description: document.getElementById('tournamentDescription').value,
+        fee: document.getElementById('tournamentFee').value || 0,
+        participants: document.getElementById('tournamentParticipants').value || 0
+      };
+
+      try {
+        if (tournamentId) {
+          await set(ref(db, `Tournaments/${tournamentId}`), tournamentData);
+        } else {
+          await push(ref(db, 'Tournaments'), tournamentData);
+        }
+        
+        closeTournamentModal();
+        loadTournaments();
+        showNotification('Турнир успешно сохранен!', 'success');
+      } catch (error) {
+        showNotification('Ошибка при сохранении турнира', 'error');
+      }
+    }
+
+    async function deleteTournament(tournamentId) {
+      if (confirm('Вы уверены, что хотите удалить этот турнир?')) {
+        try {
+          await remove(ref(db, `Tournaments/${tournamentId}`));
+          loadTournaments();
+          showNotification('Турнир удален!', 'success');
+        } catch (error) {
+          showNotification('Ошибка при удалении турнира', 'error');
+        }
+      }
+    }
+
+    // Управление пользователями
+    async function loadUsers() {
+      const snapshot = await get(ref(db, 'Users'));
+      const table = document.getElementById('usersTable');
+      table.innerHTML = '';
+
+      if (!snapshot.exists()) {
+        table.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Пользователей нет</td></tr>';
+        return;
+      }
+
+      const users = Object.entries(snapshot.val());
+
+      users.forEach(([id, userData]) => {
+        const profile = userData.profile || {};
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10 bg-gray-300 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-gray-600"></i>
+              </div>
+              <div class="ml-4">
+                <div class="font-medium text-gray-900">${profile.name || 'Пользователь'}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${profile.email || ''}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${profile.phone || ''}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">${getLevelText(profile.level)}</span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${profile.joinDate || ''}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="viewUser('${id}')" class="text-blue-600 hover:text-blue-900 mr-3">Просмотр</button>
+            <button onclick="deleteUser('${id}')" class="text-red-600 hover:text-red-900">Удалить</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function getLevelText(level) {
+      const levels = {
+        'beginner': 'Начинающий',
+        'intermediate': 'Продолжающий',
+        'advanced': 'Продвинутый',
+        'pro': 'Профессионал'
+      };
+      return levels[level] || 'Не указан';
+    }
+
+    function filterUsers() {
+      const search = document.getElementById('userSearch').value.toLowerCase();
+      const rows = document.getElementById('usersTable').getElementsByTagName('tr');
+      
+      for (let row of rows) {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(search) ? '' : 'none';
+      }
+    }
+
+    // Сообщения
+    async function loadMessages() {
+      const snapshot = await get(ref(db, 'Contacts'));
+      const container = document.getElementById('messagesList');
+      container.innerHTML = '';
+
+      if (!snapshot.exists()) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-500">Сообщений нет</div>';
+        return;
+      }
+
+      const messages = Object.entries(snapshot.val()).sort((a, b) => 
+        new Date(b[1].timestamp) - new Date(a[1].timestamp)
+      );
+
+      messages.forEach(([id, message]) => {
+        const messageEl = document.createElement('div');
+        messageEl.className = 'bg-white rounded-xl shadow-lg p-6';
+        messageEl.innerHTML = `
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="font-bold text-lg">${message.name}</h4>
+              <p class="text-gray-600">${message.email}</p>
+              ${message.phone ? `<p class="text-gray-600">${message.phone}</p>` : ''}
+            </div>
+            <div class="text-right">
+              <span class="text-sm text-gray-500">${new Date(message.timestamp).toLocaleString('ru-RU')}</span>
+              <div class="mt-1">
+                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">${message.subject}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-700 mb-4">${message.message}</p>
+          <div class="flex justify-end">
+            <button onclick="deleteMessage('${id}')" class="text-red-600 hover:text-red-900">Удалить</button>
+          </div>
+        `;
+        container.appendChild(messageEl);
+      });
+    }
+
+    // Вспомогательные функции
+    function showNotification(message, type = 'info') {
+      // Создаем уведомление
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white ${
+        type === 'success' ? 'bg-green-500' : 
+        type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+      }`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Обновляем время
+    function updateTime() {
+      document.getElementById('currentTime').textContent = new Date().toLocaleString('ru-RU');
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Делаем функции глобальными для использования в onclick
+    window.editNews = editNews;
+    window.deleteNews = deleteNews;
+    window.closeNewsModal = closeNewsModal;
+    window.editTournament = editTournament;
+    window.deleteTournament = deleteTournament;
+    window.closeTournamentModal = closeTournamentModal;
+    window.viewUser = viewUser;
+    window.deleteUser = deleteUser;
+    window.deleteMessage = deleteMessage;
+
+    function editNews(id) { openNewsModal(id); }
+    function editTournament(id) { openTournamentModal(id); }
+    
+    function viewUser(id) {
+      alert(`Просмотр пользователя ${id}`);
+      
+    }
+
+    async function deleteUser(userId) {
+      if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+        try {
+          await remove(ref(db, `Users/${userId}`));
+          loadUsers();
+          showNotification('Пользователь удален!', 'success');
+        } catch (error) {
+          showNotification('Ошибка при удалении пользователя', 'error');
+        }
+      }
+    }
+
+    async function deleteMessage(messageId) {
+      if (confirm('Удалить это сообщение?')) {
+        try {
+          await remove(ref(db, `Contacts/${messageId}`));
+          loadMessages();
+          loadDashboardStats(); 
+          showNotification('Сообщение удалено!', 'success');
+        } catch (error) {
+          showNotification('Ошибка при удалении сообщения', 'error');
+        }
+      }
+    }
+  </script>
+</body>
+</html>
