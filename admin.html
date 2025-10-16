@@ -353,6 +353,110 @@
         </div>
       </div>
 
+      <!-- Управление бронированиями -->
+<div id="bookings" class="tab-content">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-2xl font-bold">Управление бронированиями</h3>
+    <div class="flex space-x-2">
+      <input type="date" id="bookingDateFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+      <select id="bookingStatusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+        <option value="all">Все статусы</option>
+        <option value="pending">Ожидание</option>
+        <option value="confirmed">Подтверждено</option>
+        <option value="cancelled">Отменено</option>
+        <option value="completed">Завершено</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <table class="w-full">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Клиент</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Стол</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата и время</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Продолжительность</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
+        </tr>
+      </thead>
+      <tbody id="bookingsTable" class="divide-y divide-gray-200">
+        <!-- Бронирования будут загружены -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Модальное окно для редактирования бронирования -->
+  <div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4">
+      <h3 class="text-xl font-bold mb-4">Редактирование бронирования</h3>
+      <form id="bookingForm" class="space-y-4">
+        <input type="hidden" id="bookingId">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Клиент</label>
+            <input type="text" id="bookingClient" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+            <input type="text" id="bookingPhone" readonly class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Дата</label>
+            <input type="date" id="bookingDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Время</label>
+            <input type="time" id="bookingTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Номер стола</label>
+            <select id="bookingTable" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="1">Стол 1</option>
+              <option value="2">Стол 2</option>
+              <option value="3">Стол 3</option>
+              <option value="4">Стол 4</option>
+              <option value="5">Стол 5</option>
+              <option value="6">Стол 6</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Продолжительность (часы)</label>
+            <select id="bookingDuration" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="1">1 час</option>
+              <option value="2">2 часа</option>
+              <option value="3">3 часа</option>
+              <option value="4">4 часа</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Статус</label>
+          <select id="bookingStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="pending">Ожидание</option>
+            <option value="confirmed">Подтверждено</option>
+            <option value="cancelled">Отменено</option>
+            <option value="completed">Завершено</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Комментарий</label>
+          <textarea id="bookingComment" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        <div class="flex justify-end space-x-3 pt-4">
+          <button type="button" onclick="closeBookingModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Отмена</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
       <!-- Настройки -->
       <div id="settings" class="tab-content">
         <div class="bg-white rounded-xl shadow-lg p-6">
@@ -464,6 +568,7 @@
       loadTournaments();
       loadUsers();
       loadMessages();
+      loadBookings();
     }
 
     function initEventListeners() {
@@ -984,6 +1089,203 @@
         }
       }
     }
+
+    // Управление бронированиями
+async function loadBookings() {
+  const snapshot = await get(ref(db, 'Bookings'));
+  const table = document.getElementById('bookingsTable');
+  table.innerHTML = '';
+
+  if (!snapshot.exists()) {
+    table.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Бронирований пока нет</td></tr>';
+    updateBookingsCount(0);
+    return;
+  }
+
+  const bookings = Object.entries(snapshot.val());
+  let pendingCount = 0;
+
+  // Сортируем по дате (сначала ближайшие)
+  bookings.sort((a, b) => new Date(a[1].date + ' ' + a[1].time) - new Date(b[1].date + ' ' + b[1].time));
+
+  bookings.forEach(([id, booking]) => {
+    if (booking.status === 'pending') pendingCount++;
+    
+    const statusColors = {
+      'pending': 'bg-yellow-100 text-yellow-800',
+      'confirmed': 'bg-green-100 text-green-800',
+      'cancelled': 'bg-red-100 text-red-800',
+      'completed': 'bg-blue-100 text-blue-800'
+    };
+
+    const statusTexts = {
+      'pending': 'Ожидание',
+      'confirmed': 'Подтверждено',
+      'cancelled': 'Отменено',
+      'completed': 'Завершено'
+    };
+
+    const row = document.createElement('tr');
+    row.className = 'booking-row';
+    row.setAttribute('data-status', booking.status);
+    row.setAttribute('data-date', booking.date);
+    
+    row.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="font-medium text-gray-900">${booking.clientName}</div>
+        <div class="text-sm text-gray-500">${booking.phone}</div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        Стол ${booking.table}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <div>${booking.date}</div>
+        <div>${booking.time}</div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        ${booking.duration} час(а)
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <span class="px-2 py-1 text-xs rounded-full ${statusColors[booking.status]}">${statusTexts[booking.status]}</span>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <button onclick="editBooking('${id}')" class="text-blue-600 hover:text-blue-900 mr-3">Редактировать</button>
+        <button onclick="deleteBooking('${id}')" class="text-red-600 hover:text-red-900">Удалить</button>
+      </td>
+    `;
+    table.appendChild(row);
+  });
+
+  updateBookingsCount(pendingCount);
+  initBookingFilters();
+}
+
+function updateBookingsCount(count) {
+  const countElement = document.getElementById('pendingBookingsCount');
+  if (count > 0) {
+    countElement.textContent = count;
+    countElement.classList.remove('hidden');
+  } else {
+    countElement.classList.add('hidden');
+  }
+}
+
+function initBookingFilters() {
+  const dateFilter = document.getElementById('bookingDateFilter');
+  const statusFilter = document.getElementById('bookingStatusFilter');
+  
+  if (dateFilter) {
+    dateFilter.addEventListener('change', filterBookings);
+  }
+  if (statusFilter) {
+    statusFilter.addEventListener('change', filterBookings);
+  }
+}
+
+function filterBookings() {
+  const dateFilter = document.getElementById('bookingDateFilter').value;
+  const statusFilter = document.getElementById('bookingStatusFilter').value;
+  const rows = document.querySelectorAll('.booking-row');
+  
+  rows.forEach(row => {
+    const rowDate = row.getAttribute('data-date');
+    const rowStatus = row.getAttribute('data-status');
+    
+    const dateMatch = !dateFilter || rowDate === dateFilter;
+    const statusMatch = statusFilter === 'all' || rowStatus === statusFilter;
+    
+    row.style.display = dateMatch && statusMatch ? '' : 'none';
+  });
+}
+
+function openBookingModal(bookingId = null) {
+  const modal = document.getElementById('bookingModal');
+  const title = document.getElementById('bookingModalTitle');
+  
+  if (bookingId) {
+    title.textContent = 'Редактирование бронирования';
+    loadBookingData(bookingId);
+  } else {
+    title.textContent = 'Добавление бронирования';
+    document.getElementById('bookingForm').reset();
+    document.getElementById('bookingId').value = '';
+  }
+  
+  modal.classList.remove('hidden');
+}
+
+async function loadBookingData(bookingId) {
+  const snapshot = await get(ref(db, `Bookings/${bookingId}`));
+  if (snapshot.exists()) {
+    const booking = snapshot.val();
+    document.getElementById('bookingId').value = bookingId;
+    document.getElementById('bookingClient').value = booking.clientName || '';
+    document.getElementById('bookingPhone').value = booking.phone || '';
+    document.getElementById('bookingDate').value = booking.date || '';
+    document.getElementById('bookingTime').value = booking.time || '';
+    document.getElementById('bookingTable').value = booking.table || '1';
+    document.getElementById('bookingDuration').value = booking.duration || '1';
+    document.getElementById('bookingStatus').value = booking.status || 'pending';
+    document.getElementById('bookingComment').value = booking.comment || '';
+  }
+}
+
+function closeBookingModal() {
+  document.getElementById('bookingModal').classList.add('hidden');
+}
+
+async function handleBookingSubmit(e) {
+  e.preventDefault();
+  
+  const bookingId = document.getElementById('bookingId').value;
+  const bookingData = {
+    clientName: document.getElementById('bookingClient').value,
+    phone: document.getElementById('bookingPhone').value,
+    date: document.getElementById('bookingDate').value,
+    time: document.getElementById('bookingTime').value,
+    table: document.getElementById('bookingTable').value,
+    duration: document.getElementById('bookingDuration').value,
+    status: document.getElementById('bookingStatus').value,
+    comment: document.getElementById('bookingComment').value,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    if (bookingId) {
+      // Редактирование
+      await set(ref(db, `Bookings/${bookingId}`), bookingData);
+    } else {
+      // Добавление
+      bookingData.createdAt = new Date().toISOString();
+      await push(ref(db, 'Bookings'), bookingData);
+    }
+    
+    closeBookingModal();
+    loadBookings();
+    showNotification('Бронирование успешно сохранено!', 'success');
+  } catch (error) {
+    showNotification('Ошибка при сохранении бронирования', 'error');
+  }
+}
+
+async function deleteBooking(bookingId) {
+  if (confirm('Вы уверены, что хотите удалить это бронирование?')) {
+    try {
+      await remove(ref(db, `Bookings/${bookingId}`));
+      loadBookings();
+      showNotification('Бронирование удалено!', 'success');
+    } catch (error) {
+      showNotification('Ошибка при удалении бронирования', 'error');
+    }
+  }
+}
+
+// Добавляем в глобальные функции
+window.editBooking = editBooking;
+window.deleteBooking = deleteBooking;
+window.closeBookingModal = closeBookingModal;
+
+function editBooking(id) { openBookingModal(id); }
   </script>
 </body>
 </html>
