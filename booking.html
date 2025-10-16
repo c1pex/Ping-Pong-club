@@ -271,6 +271,457 @@
       </div>
     </div>
   </footer>
+  <!-- Подключаем Flatpickr -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+
+  <!-- Основной скрипт бронирования -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getDatabase, ref, get, set, push, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Текущее состояние бронирования
+    let bookingState = {
+      selectedDate: null,
+      selectedTime: null,
+      selectedTable: null,
+      selectedDuration: 60 // 60 минут по умолчанию
+    };
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+      initBookingSystem();
+      loadMyBookings();
+    });
+
+    function initBookingSystem() {
+      initDatePicker();
+      initEventListeners();
+    }
+
+    function initDatePicker() {
+      flatpickr("#bookingDate", {
+        locale: "ru",
+        minDate: "today",
+        dateFormat: "d.m.Y",
+        disable: [
+          function(date) {
+            // Отключаем понедельник (день технического обслуживания)
+            return date.getDay() === 1;
+          }
+        ],
+        onChange: function(selectedDates, dateStr, instance) {
+          bookingState.selectedDate = dateStr;
+          loadAvailableTimeSlots(dateStr);
+        }
+      });
+    }
+
+    function initEventListeners() {
+      // Форма бронирования
+      document.getElementById('bookingFormFields').addEventListener('submit', handleBookingSubmit);
+    }
+
+    // Загрузка доступных временных слотов
+    async function loadAvailableTimeSlots(date) {
+      const timeSlotsContainer = document.getElementById('timeSlots');
+      timeSlotsContainer.innerHTML = '<div class="col-span-4 text-center py-4 text-gray-500">Загрузка...</div>';
+
+      // Показываем выбор времени
+      document.getElementById('timeSelection').classList.remove('hidden');
+      document.getElementById('tableSelection').classList.add('hidden');
+      document.getElementById('bookingForm').classList.add('hidden');
+
+      // Генерируем временные слоты (9:00 - 22:00)
+      const timeSlots = generateTimeSlots();
+      
+      // Проверяем занятые слоты в базе данных
+      const occupiedSlots = await getOccupiedTimeSlots(date);
+
+      timeSlotsContainer.innerHTML = '';
+      
+      timeSlots.forEach(slot => {
+        const isOccupied = occupiedSlots.some(occupied => 
+          occupied.time === slot.time && occupied.duration === slot.duration
+        );
+
+        const slotElement = document.createElement('button');
+        slotElement.type = 'button';
+        slotElement.className = `time-slot py-3 px-4 rounded-lg border text-sm font-medium ${
+          isOccupied ? 'occupied' : 'bg-white border-gray-300 hover:border-blue-500'
+        }`;
+        slotElement.textContent = slot.time;
+        slotElement.disabled = isOccupied;
+
+        if (!isOccupied) {
+          slotElement.addEventListener('click', () => selectTimeSlot(slot));
+        }
+
+        timeSlotsContainer.appendChild(slotElement);
+      });
+    }
+
+    function generateTimeSlots() {
+      const slots = [];
+      const startHour = 9; // 9:00
+      const endHour = 22; // 22:00
+        
+      for (let hour = startHour; hour < endHour; hour++) {
+        slots.push({
+          time: `${hour.toString().padStart(2, '0')}:00`,
+          duration: 60
+        });
+      }
+      
+      return slots;
+    }
+
+    async function getOccupiedTimeSlots(date) {
+      try {
+        const bookingsRef = ref(db, 'Bookings');
+        const dateQuery = query(bookingsRef, orderByChild('date'), equalTo(date));
+        const snapshot = await get(dateQuery);
+        
+        if (snapshot.exists()) {
+          return Object.values(snapshot.val()).map(booking => ({
+            time: booking.time,
+            duration: booking.duration
+          }));
+        }
+        return [];
+      } catch (error) {
+        console.error('Ошибка загрузки занятых слотов:', error);
+        return [];
+      }
+    }
+
+    function selectTimeSlot(slot) {
+      bookingState.selectedTime = slot.time;
+      bookingState.selectedDuration = slot.duration;
+      
+      // Убираем выделение у всех слотов
+      document.querySelectorAll('.time-slot').forEach(s => {
+        s.classList.remove('selected', 'bg-blue-500', 'text-white');
+      });
+      
+      // Выделяем выбранный слот
+      event.target.classList.add('selected', 'bg-blue-500', 'text-white');
+      
+      // Показываем выбор столов
+      loadAvailableTables();
+    }
+
+    async function loadAvailableTables() {
+      document.getElementById('tableSelection').classList.remove('hidden');
+      
+      const tablesList = document.getElementById('tablesList');
+      tablesList.innerHTML = '<div class="col-span-2 text-center py-4 text-gray-500">Загрузка столов...</div>';
+
+      // Получаем занятые столы на выбранное время
+      const occupiedTables = await getOccupiedTables(bookingState.selectedDate, bookingState.selectedTime);
+
+      // Список всех столов в клубе
+      const allTables = [
+        { id: 'table1', name: 'Стол 1', type: 'professional', price: 400 },
+        { id: 'table2', name: 'Стол 2', type: 'standard', price: 300 },
+        { id: 'table3', name: 'Стол 3', type: 'standard', price: 300 },
+        { id: 'table4', name: 'Стол 4', type: 'training', price: 250 },
+        { id: 'table5', name: 'Стол 5', type: 'training', price: 250 },
+        { id: 'table6', name: 'Стол 6', type: 'standard', price: 300 }
+      ];
+
+      tablesList.innerHTML = '';
+
+      allTables.forEach(table => {
+        const isOccupied = occupiedTables.includes(table.id);
+        const isMaintenance = table.id === 'table1' && new Date().getDay() === 1; // Пример: стол 1 на обслуживании по понедельникам
+
+        const tableCard = document.createElement('div');
+        tableCard.className = `booking-card p-4 rounded-lg border-2 ${
+          isOccupied ? 'table-occupied bg-red-50 border-red-200' :
+          isMaintenance ? 'table-maintenance bg-yellow-50 border-yellow-200' :
+          'table-available bg-green-50 border-green-200'
+        } cursor-pointer transition-all`;
+        
+        tableCard.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-semibold text-lg">${table.name}</h3>
+            <span class="text-sm font-medium ${isOccupied ? 'text-red-600' : 'text-green-600'}">
+              ${isOccupied ? 'Занят' : isMaintenance ? 'Обслуживание' : 'Свободен'}
+            </span>
+          </div>
+          <p class="text-sm text-gray-600 mb-2">${getTableTypeText(table.type)}</p>
+          <p class="text-lg font-bold text-blue-600">${table.price} ₽/час</p>
+          ${!isOccupied && !isMaintenance ? 
+            `<button class="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition select-table-btn" data-table='${JSON.stringify(table)}'>
+               Выбрать
+             </button>` : 
+            `<button class="w-full mt-3 bg-gray-400 text-white py-2 rounded-lg cursor-not-allowed" disabled>
+               Недоступен
+             </button>`
+          }
+        `;
+
+        if (!isOccupied && !isMaintenance) {
+          tableCard.querySelector('.select-table-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectTable(table);
+          });
+        }
+
+        tablesList.appendChild(tableCard);
+      });
+    }
+
+    function getTableTypeText(type) {
+      const types = {
+        'professional': 'Профессиональный',
+        'standard': 'Стандартный', 
+        'training': 'Тренировочный'
+      };
+      return types[type] || type;
+    }
+
+    async function getOccupiedTables(date, time) {
+      try {
+        const bookingsRef = ref(db, 'Bookings');
+        const dateQuery = query(bookingsRef, orderByChild('date'), equalTo(date));
+        const snapshot = await get(dateQuery);
+        
+        if (snapshot.exists()) {
+          const bookings = Object.values(snapshot.val());
+          return bookings
+            .filter(booking => booking.time === time)
+            .map(booking => booking.tableId);
+        }
+        return [];
+      } catch (error) {
+        console.error('Ошибка загрузки занятых столов:', error);
+        return [];
+      }
+    }
+
+    function selectTable(table) {
+      bookingState.selectedTable = table;
+      
+      // Показываем форму бронирования
+      showBookingForm();
+    }
+
+    function showBookingForm() {
+      document.getElementById('bookingForm').classList.remove('hidden');
+      
+      // Обновляем детали бронирования
+      const details = `
+        Дата: ${bookingState.selectedDate}<br>
+        Время: ${bookingState.selectedTime}<br>
+        Длительность: ${bookingState.selectedDuration} мин<br>
+        Стол: ${bookingState.selectedTable.name}<br>
+        Тип: ${getTableTypeText(bookingState.selectedTable.type)}
+      `;
+      
+      document.getElementById('bookingDetails').innerHTML = details;
+      document.getElementById('bookingPrice').textContent = `${bookingState.selectedTable.price} ₽`;
+      
+      // Если пользователь авторизован, подставляем его данные
+      const user = auth.currentUser;
+      if (user) {
+        loadUserProfileData();
+      }
+    }
+
+    async function loadUserProfileData() {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userRef = ref(db, `Users/${user.uid}/profile`);
+        const snapshot = await get(userRef);
+        
+        if (snapshot.exists()) {
+          const profile = snapshot.val();
+          document.getElementById('bookingName').value = profile.name || '';
+          document.getElementById('bookingPhone').value = profile.phone || '';
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки профиля:', error);
+      }
+    }
+
+    async function handleBookingSubmit(e) {
+      e.preventDefault();
+      
+      const bookingData = {
+        date: bookingState.selectedDate,
+        time: bookingState.selectedTime,
+        duration: bookingState.selectedDuration,
+        tableId: bookingState.selectedTable.id,
+        tableName: bookingState.selectedTable.name,
+        tableType: bookingState.selectedTable.type,
+        price: bookingState.selectedTable.price,
+        customerName: document.getElementById('bookingName').value,
+        customerPhone: document.getElementById('bookingPhone').value,
+        comment: document.getElementById('bookingComment').value,
+        status: 'confirmed',
+        createdAt: new Date().toISOString(),
+        userId: auth.currentUser ? auth.currentUser.uid : null
+      };
+
+      try {
+        // Сохраняем бронирование в базе данных
+        await push(ref(db, 'Bookings'), bookingData);
+        
+        // Показываем уведомление об успехе
+        showBookingSuccess(bookingData);
+        
+        // Сбрасываем форму
+        resetBookingForm();
+        
+        // Обновляем список бронирований
+        loadMyBookings();
+        
+      } catch (error) {
+        console.error('Ошибка бронирования:', error);
+        alert('Произошла ошибка при бронировании. Пожалуйста, попробуйте еще раз.');
+      }
+    }
+
+    function showBookingSuccess(bookingData) {
+      const successMessage = `
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl p-6 max-w-md mx-4 text-center">
+            <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+            <h3 class="text-2xl font-bold mb-2">Бронирование подтверждено!</h3>
+            <p class="text-gray-600 mb-4">
+              Стол "${bookingData.tableName}" забронирован на<br>
+              <strong>${bookingData.date} в ${bookingData.time}</strong>
+            </p>
+            <p class="text-sm text-gray-500 mb-4">
+              Стоимость: ${bookingData.price} ₽<br>
+              Оплата на месте
+            </p>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+              Понятно
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', successMessage);
+    }
+
+    function resetBookingForm() {
+      bookingState = {
+        selectedDate: null,
+        selectedTime: null, 
+        selectedTable: null,
+        selectedDuration: 60
+      };
+      
+      document.getElementById('bookingDate').value = '';
+      document.getElementById('timeSelection').classList.add('hidden');
+      document.getElementById('tableSelection').classList.add('hidden');
+      document.getElementById('bookingForm').classList.add('hidden');
+      document.getElementById('bookingFormFields').reset();
+    }
+
+    // Загрузка моих бронирований
+    async function loadMyBookings() {
+      const myBookingsContainer = document.getElementById('myBookings');
+      
+      if (!auth.currentUser) {
+        myBookingsContainer.innerHTML = `
+          <p class="text-gray-500 text-center py-4">
+            <a href="authorization.html" class="text-blue-600 hover:underline">Войдите</a>, чтобы видеть свои бронирования
+          </p>
+        `;
+        return;
+      }
+
+      try {
+        const bookingsRef = ref(db, 'Bookings');
+        const userQuery = query(bookingsRef, orderByChild('userId'), equalTo(auth.currentUser.uid));
+        const snapshot = await get(userQuery);
+        
+        if (!snapshot.exists()) {
+          myBookingsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">У вас пока нет бронирований</p>';
+          return;
+        }
+
+        const bookings = Object.entries(snapshot.val())
+          .sort((a, b) => new Date(b[1].createdAt) - new Date(a[1].createdAt))
+          .slice(0, 3); // Показываем последние 3 бронирования
+
+        myBookingsContainer.innerHTML = '';
+        
+        bookings.forEach(([id, booking]) => {
+          const bookingElement = document.createElement('div');
+          bookingElement.className = 'bg-gray-50 rounded-lg p-3 mb-2';
+          bookingElement.innerHTML = `
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold">${booking.tableName}</p>
+                <p class="text-sm text-gray-600">${booking.date} в ${booking.time}</p>
+              </div>
+              <span class="px-2 py-1 text-xs rounded-full ${
+                booking.status === 'confirmed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+              }">
+                ${booking.status === 'confirmed' ? 'Подтверждено' : 'Ожидание'}
+              </span>
+            </div>
+          `;
+          myBookingsContainer.appendChild(bookingElement);
+        });
+
+        if (bookings.length === 0) {
+          myBookingsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">У вас пока нет бронирований</p>';
+        }
+
+      } catch (error) {
+        console.error('Ошибка загрузки бронирований:', error);
+        myBookingsContainer.innerHTML = '<p class="text-red-500 text-center py-4">Ошибка загрузки</p>';
+      }
+    }
+
+    // Слушатель изменения состояния авторизации
+    onAuthStateChanged(auth, (user) => {
+      const authButton = document.querySelector('.auth-button');
+      
+      if (user) {
+        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+        authButton.href = "profile.html";
+        loadMyBookings();
+      } else {
+        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+        authButton.href = "authorization.html";
+      }
+    });
+
+    // Обработчик клика по кнопке профиля
+    document.querySelector('.auth-button').addEventListener('click', function(e) {
+      const user = auth.currentUser;
+      if (!user) {
+        e.preventDefault();
+        window.location.href = 'authorization.html';
+      }
+    });
+  </script>
     </body>
 </body>
 </html>
