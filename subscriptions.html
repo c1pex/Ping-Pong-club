@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Абонементы | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    
+    body {
+        font-family: 'Montserrat', sans-serif;
+    }
+    .subscription-card {
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+    }
+    .subscription-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .subscription-card:popular {
+        border-color: #3b82f6;
+        position: relative;
+    }
+    .popular-badge {
+        position: absolute;
+        top: -12px;
+        right: 20px;
+        background: #3b82f6;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .feature-list li {
+        transition: all 0.2s ease;
+    }
+    .feature-list li:hover {
+        transform: translateX(5px);
+    }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!--Навигация-->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            
+        </div>
+    </header>
+</body>
