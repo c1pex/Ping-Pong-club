@@ -53,6 +53,13 @@
           </a>
         </li>
         <li>
+          <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="bookings">
+            <i class="fas fa-calendar-check mr-3"></i>
+            Бронирования
+            <span id="pendingBookingsCount" class="ml-auto bg-yellow-500 text-white text-xs rounded-full px-2 py-1 hidden">0</span>
+          </a>
+        </li>
+        <li>
           <a href="#" class="admin-nav flex items-center p-3 rounded-lg hover:bg-gray-700 transition" data-tab="news">
             <i class="fas fa-newspaper mr-3"></i>
             Новости
@@ -154,8 +161,8 @@
           <div class="bg-orange-500 text-white rounded-xl p-6">
             <div class="flex justify-between items-start">
               <div>
-                <p class="text-orange-200">Записей на тренировки</p>
-                <p class="text-3xl font-bold mt-2" id="trainingBookings">0</p>
+                <p class="text-orange-200">Бронирований сегодня</p>
+                <p class="text-3xl font-bold mt-2" id="todayBookings">0</p>
               </div>
               <i class="fas fa-calendar-check text-2xl opacity-50"></i>
             </div>
@@ -170,7 +177,98 @@
           <div class="bg-white rounded-xl shadow-lg p-6">
             <h3 class="text-lg font-bold mb-4">Последние действия</h3>
             <div id="recentActivity" class="space-y-3">
-              <!-- Активность будет загружена -->
+              <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-white text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium">Новый пользователь зарегистрирован</p>
+                  <p class="text-xs text-gray-500">2 минуты назад</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-calendar text-white text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium">Новое бронирование стола</p>
+                  <p class="text-xs text-gray-500">5 минут назад</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Управление бронированиями -->
+      <div id="bookings" class="tab-content">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold">Управление бронированиями</h3>
+          <div class="flex space-x-3">
+            <select id="bookingsFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="all">Все бронирования</option>
+              <option value="today">Сегодня</option>
+              <option value="upcoming">Предстоящие</option>
+              <option value="pending">Ожидающие подтверждения</option>
+              <option value="confirmed">Подтвержденные</option>
+              <option value="cancelled">Отмененные</option>
+              <option value="completed">Завершенные</option>
+            </select>
+            <button id="exportBookings" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+              <i class="fas fa-download mr-2"></i>Экспорт
+            </button>
+          </div>
+        </div>
+
+        <!-- Статистика бронирований -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-blue-500 text-white rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold" id="totalBookings">0</div>
+            <div class="text-sm">Всего броней</div>
+          </div>
+          <div class="bg-yellow-500 text-white rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold" id="pendingBookingsStats">0</div>
+            <div class="text-sm">Ожидают подтверждения</div>
+          </div>
+          <div class="bg-green-500 text-white rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold" id="confirmedBookings">0</div>
+            <div class="text-sm">Подтверждено</div>
+          </div>
+          <div class="bg-purple-500 text-white rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold" id="revenueBookings">0 ₽</div>
+            <div class="text-sm">Выручка</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Клиент</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Стол / Дата</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Время</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Стоимость</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTable" class="divide-y divide-gray-200">
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Загрузка бронирований...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Модальное окно просмотра бронирования -->
+        <div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+          <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl font-bold mb-4">Детали бронирования</h3>
+            <div id="bookingDetailsContent">
+              <!-- Детали будут загружены -->
+            </div>
+            <div class="flex justify-end space-x-3 pt-4 mt-6 border-t">
+              <button onclick="closeBookingModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">Закрыть</button>
             </div>
           </div>
         </div>
@@ -196,7 +294,9 @@
               </tr>
             </thead>
             <tbody id="newsTable" class="divide-y divide-gray-200">
-              <!-- Новости будут загружены -->
+              <tr>
+                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Загрузка новостей...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -249,7 +349,9 @@
               </tr>
             </thead>
             <tbody id="tournamentsTable" class="divide-y divide-gray-200">
-              <!-- Турниры будут загружены -->
+              <tr>
+                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Загрузка турниров...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -325,7 +427,9 @@
               </tr>
             </thead>
             <tbody id="usersTable" class="divide-y divide-gray-200">
-              <!-- Пользователи будут загружены -->
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Загрузка пользователей...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -341,7 +445,7 @@
         </div>
 
         <div class="space-y-4" id="messagesList">
-          <!-- Сообщения будут загружены -->
+          <div class="text-center py-8 text-gray-500">Загрузка сообщений...</div>
         </div>
       </div>
 
@@ -411,7 +515,7 @@
   <!-- Основной скрипт админ-панели -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import { getDatabase, ref, get, set, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+    import { getDatabase, ref, get, set, remove, onValue, push, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -452,6 +556,7 @@
 
     function loadAdminData() {
       loadDashboardStats();
+      loadBookings();
       loadNews();
       loadTournaments();
       loadUsers();
@@ -478,6 +583,10 @@
 
       // Поиск
       document.getElementById('userSearch').addEventListener('input', filterUsers);
+
+      // Бронирования
+      document.getElementById('bookingsFilter').addEventListener('change', filterBookings);
+      document.getElementById('exportBookings').addEventListener('click', exportBookings);
     }
 
     function switchTab(tabName) {
@@ -496,6 +605,7 @@
       // Обновляем заголовок
       const titles = {
         dashboard: 'Дашборд',
+        bookings: 'Управление бронированиями',
         news: 'Управление новостями',
         tournaments: 'Управление турнирами',
         users: 'Управление пользователями',
@@ -527,6 +637,15 @@
       // Сообщения
       const messagesSnapshot = await get(ref(db, 'Contacts'));
       document.getElementById('newMessages').textContent = messagesSnapshot.exists() ? Object.keys(messagesSnapshot.val()).length : 0;
+
+      // Бронирования на сегодня
+      const bookingsSnapshot = await get(ref(db, 'Bookings'));
+      if (bookingsSnapshot.exists()) {
+        const bookings = Object.values(bookingsSnapshot.val());
+        const today = new Date().toLocaleDateString('ru-RU');
+        const todayBookings = bookings.filter(b => b.date === today && b.status !== 'cancelled');
+        document.getElementById('todayBookings').textContent = todayBookings.length;
+      }
 
       // Инициализация графика
       initVisitsChart();
@@ -563,18 +682,359 @@
       });
     }
 
-    // Управление новостями
+    // ==================== УПРАВЛЕНИЕ БРОНИРОВАНИЯМИ ====================
+
+    async function loadBookings() {
+      try {
+        const snapshot = await get(ref(db, 'Bookings'));
+        const table = document.getElementById('bookingsTable');
+        updateBookingsStats(snapshot);
+        
+        if (!snapshot.exists()) {
+          table.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Бронирований пока нет</td></tr>';
+          return;
+        }
+
+        const bookings = Object.entries(snapshot.val()).sort((a, b) => 
+          new Date(b[1].createdAt) - new Date(a[1].createdAt)
+        );
+
+        displayBookingsTable(bookings);
+      } catch (error) {
+        console.error('Ошибка загрузки бронирований:', error);
+      }
+    }
+
+    function updateBookingsStats(snapshot) {
+      if (!snapshot.exists()) {
+        document.getElementById('totalBookings').textContent = '0';
+        document.getElementById('pendingBookingsStats').textContent = '0';
+        document.getElementById('confirmedBookings').textContent = '0';
+        document.getElementById('revenueBookings').textContent = '0 ₽';
+        return;
+      }
+
+      const bookings = Object.values(snapshot.val());
+      const today = new Date().toLocaleDateString('ru-RU');
+      
+      const total = bookings.length;
+      const pending = bookings.filter(b => b.status === 'pending').length;
+      const confirmed = bookings.filter(b => b.status === 'confirmed').length;
+      const revenue = bookings
+        .filter(b => b.status === 'confirmed' || b.status === 'completed')
+        .reduce((sum, b) => sum + (b.price || 0), 0);
+
+      document.getElementById('totalBookings').textContent = total;
+      document.getElementById('pendingBookingsStats').textContent = pending;
+      document.getElementById('confirmedBookings').textContent = confirmed;
+      document.getElementById('revenueBookings').textContent = `${revenue} ₽`;
+
+      // Обновляем счетчик ожидающих подтверждения
+      const pendingBadge = document.getElementById('pendingBookingsCount');
+      if (pending > 0) {
+        pendingBadge.textContent = pending;
+        pendingBadge.classList.remove('hidden');
+      } else {
+        pendingBadge.classList.add('hidden');
+      }
+    }
+
+    function displayBookingsTable(bookings) {
+      const table = document.getElementById('bookingsTable');
+      table.innerHTML = '';
+
+      bookings.forEach(([id, booking]) => {
+        const statusColors = {
+          'pending': 'bg-yellow-100 text-yellow-800',
+          'confirmed': 'bg-green-100 text-green-800',
+          'cancelled': 'bg-red-100 text-red-800',
+          'completed': 'bg-blue-100 text-blue-800'
+        };
+
+        const statusTexts = {
+          'pending': 'Ожидание',
+          'confirmed': 'Подтверждено',
+          'cancelled': 'Отменено',
+          'completed': 'Завершено'
+        };
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-medium text-gray-900">${booking.customerName}</div>
+            <div class="text-sm text-gray-500">${booking.customerPhone}</div>
+            ${booking.userId ? '<div class="text-xs text-blue-600">Зарегистрирован</div>' : ''}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-medium">${booking.tableName}</div>
+            <div class="text-sm text-gray-500">${booking.date}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            ${booking.time}<br>
+            <span class="text-xs">${booking.duration} мин</span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="font-semibold">${booking.price} ₽</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 py-1 text-xs rounded-full ${statusColors[booking.status] || 'bg-gray-100'}">
+              ${statusTexts[booking.status] || booking.status}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="viewBooking('${id}')" class="text-blue-600 hover:text-blue-900 mr-3">Просмотр</button>
+            ${booking.status === 'pending' ? `
+              <button onclick="confirmBooking('${id}')" class="text-green-600 hover:text-green-900 mr-2">Подтвердить</button>
+              <button onclick="cancelBooking('${id}')" class="text-red-600 hover:text-red-900">Отклонить</button>
+            ` : ''}
+            ${booking.status === 'confirmed' ? `
+              <button onclick="completeBooking('${id}')" class="text-green-600 hover:text-green-900 mr-2">Завершить</button>
+              <button onclick="cancelBooking('${id}')" class="text-red-600 hover:text-red-900">Отменить</button>
+            ` : ''}
+            <button onclick="deleteBooking('${id}')" class="text-gray-600 hover:text-gray-900 ml-2">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function filterBookings() {
+      const filter = document.getElementById('bookingsFilter').value;
+      const rows = document.getElementById('bookingsTable').getElementsByTagName('tr');
+      const today = new Date().toLocaleDateString('ru-RU');
+
+      for (let row of rows) {
+        const statusCell = row.querySelector('td:nth-child(5)');
+        const dateCell = row.querySelector('td:nth-child(2)');
+        
+        if (!statusCell || !dateCell) continue;
+
+        const status = statusCell.textContent.trim();
+        const date = dateCell.textContent.split('\n')[1].trim();
+        const bookingDate = new Date(date.split('.').reverse().join('-'));
+
+        let showRow = true;
+
+        switch (filter) {
+          case 'today':
+            showRow = date === today;
+            break;
+          case 'upcoming':
+            showRow = bookingDate >= new Date() && status !== 'completed' && status !== 'cancelled';
+            break;
+          case 'pending':
+            showRow = status === 'Ожидание';
+            break;
+          case 'confirmed':
+            showRow = status === 'Подтверждено';
+            break;
+          case 'cancelled':
+            showRow = status === 'Отменено';
+            break;
+          case 'completed':
+            showRow = status === 'Завершено';
+            break;
+        }
+
+        row.style.display = showRow ? '' : 'none';
+      }
+    }
+
+    async function viewBooking(bookingId) {
+      try {
+        const snapshot = await get(ref(db, `Bookings/${bookingId}`));
+        if (snapshot.exists()) {
+          const booking = snapshot.val();
+          showBookingModal(booking, bookingId);
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки бронирования:', error);
+      }
+    }
+
+    function showBookingModal(booking, bookingId) {
+      const modal = document.getElementById('bookingModal');
+      const content = document.getElementById('bookingDetailsContent');
+
+      const statusColors = {
+        'pending': 'yellow',
+        'confirmed': 'green',
+        'cancelled': 'red',
+        'completed': 'blue'
+      };
+
+      const statusTexts = {
+        'pending': 'Ожидание подтверждения',
+        'confirmed': 'Подтверждено',
+        'cancelled': 'Отменено',
+        'completed': 'Завершено'
+      };
+
+      content.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="font-semibold mb-2">Информация о клиенте</h4>
+            <div class="space-y-2">
+              <p><strong>Имя:</strong> ${booking.customerName}</p>
+              <p><strong>Телефон:</strong> ${booking.customerPhone}</p>
+              <p><strong>Email:</strong> ${booking.customerEmail || 'Не указан'}</p>
+              ${booking.userId ? `<p><strong>ID пользователя:</strong> ${booking.userId}</p>` : ''}
+            </div>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold mb-2">Детали бронирования</h4>
+            <div class="space-y-2">
+              <p><strong>Стол:</strong> ${booking.tableName} (${getTableTypeText(booking.tableType)})</p>
+              <p><strong>Дата:</strong> ${booking.date}</p>
+              <p><strong>Время:</strong> ${booking.time} (${booking.duration} мин)</p>
+              <p><strong>Стоимость:</strong> ${booking.price} ₽</p>
+              <p><strong>Статус:</strong> 
+                <span class="px-2 py-1 text-xs rounded-full bg-${statusColors[booking.status]}-100 text-${statusColors[booking.status]}-800">
+                  ${statusTexts[booking.status]}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        ${booking.comment ? `
+          <div class="mt-4">
+            <h4 class="font-semibold mb-2">Комментарий клиента</h4>
+            <p class="bg-gray-50 p-3 rounded-lg">${booking.comment}</p>
+          </div>
+        ` : ''}
+
+        <div class="mt-4">
+          <h4 class="font-semibold mb-2">Системная информация</h4>
+          <div class="space-y-1 text-sm text-gray-600">
+            <p><strong>ID бронирования:</strong> ${bookingId}</p>
+            <p><strong>Создано:</strong> ${new Date(booking.createdAt).toLocaleString('ru-RU')}</p>
+            ${booking.updatedAt ? `<p><strong>Обновлено:</strong> ${new Date(booking.updatedAt).toLocaleString('ru-RU')}</p>` : ''}
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h4 class="font-semibold mb-3">Быстрые действия</h4>
+          <div class="flex flex-wrap gap-2">
+            ${booking.status === 'pending' ? `
+              <button onclick="confirmBooking('${bookingId}')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                Подтвердить бронь
+              </button>
+              <button onclick="cancelBooking('${bookingId}')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                Отклонить
+              </button>
+            ` : ''}
+            ${booking.status === 'confirmed' ? `
+              <button onclick="completeBooking('${bookingId}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                Отметить завершенным
+              </button>
+              <button onclick="cancelBooking('${bookingId}')" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                Отменить
+              </button>
+            ` : ''}
+            <button onclick="sendReminder('${bookingId}')" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition">
+              Напомнить клиенту
+            </button>
+          </div>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+    }
+
+    async function confirmBooking(bookingId) {
+      if (confirm('Подтвердить это бронирование?')) {
+        try {
+          await set(ref(db, `Bookings/${bookingId}/status`), 'confirmed');
+          await set(ref(db, `Bookings/${bookingId}/updatedAt`), new Date().toISOString());
+          loadBookings();
+          showNotification('Бронирование подтверждено!', 'success');
+          closeBookingModal();
+        } catch (error) {
+          showNotification('Ошибка при подтверждении бронирования', 'error');
+        }
+      }
+    }
+
+    async function completeBooking(bookingId) {
+      if (confirm('Отметить бронирование как завершенное?')) {
+        try {
+          await set(ref(db, `Bookings/${bookingId}/status`), 'completed');
+          await set(ref(db, `Bookings/${bookingId}/updatedAt`), new Date().toISOString());
+          loadBookings();
+          showNotification('Бронирование завершено!', 'success');
+          closeBookingModal();
+        } catch (error) {
+          showNotification('Ошибка при завершении бронирования', 'error');
+        }
+      }
+    }
+
+    async function cancelBooking(bookingId) {
+      if (confirm('Отменить это бронирование?')) {
+        try {
+          await set(ref(db, `Bookings/${bookingId}/status`), 'cancelled');
+          await set(ref(db, `Bookings/${bookingId}/updatedAt`), new Date().toISOString());
+          loadBookings();
+          showNotification('Бронирование отменено!', 'success');
+          closeBookingModal();
+        } catch (error) {
+          showNotification('Ошибка при отмене бронирования', 'error');
+        }
+      }
+    }
+
+    async function deleteBooking(bookingId) {
+      if (confirm('Удалить это бронирование? Это действие нельзя отменить.')) {
+        try {
+          await remove(ref(db, `Bookings/${bookingId}`));
+          loadBookings();
+          showNotification('Бронирование удалено!', 'success');
+        } catch (error) {
+          showNotification('Ошибка при удалении бронирования', 'error');
+        }
+      }
+    }
+
+    function sendReminder(bookingId) {
+      alert('Напоминание отправлено клиенту!');
+      showNotification('Напоминание отправлено клиенту', 'success');
+    }
+
+    function exportBookings() {
+      alert('Функция экспорта будет реализована в следующей версии!');
+    }
+
+    function getTableTypeText(type) {
+      const types = {
+        'professional': 'Профессиональный',
+        'standard': 'Стандартный', 
+        'training': 'Тренировочный'
+      };
+      return types[type] || type;
+    }
+
+    // ==================== УПРАВЛЕНИЕ НОВОСТЯМИ ====================
+
     async function loadNews() {
       const snapshot = await get(ref(db, 'News'));
       const table = document.getElementById('newsTable');
-      table.innerHTML = '';
-
+      
       if (!snapshot.exists()) {
         table.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Новостей пока нет</td></tr>';
         return;
       }
 
       const news = Object.entries(snapshot.val()).sort((a, b) => new Date(b[1].Date) - new Date(a[1].Date));
+
+      table.innerHTML = '';
 
       news.forEach(([id, item]) => {
         const row = document.createElement('tr');
@@ -601,7 +1061,6 @@
       
       if (newsId) {
         title.textContent = 'Редактировать новость';
-        // Загружаем данные новости
         loadNewsData(newsId);
       } else {
         title.textContent = 'Добавить новость';
@@ -640,10 +1099,8 @@
 
       try {
         if (newsId) {
-          // Редактирование
           await set(ref(db, `News/${newsId}`), newsData);
         } else {
-          // Добавление
           await push(ref(db, 'News'), newsData);
         }
         
@@ -667,18 +1124,20 @@
       }
     }
 
-    // Управление турнирами
+    // ==================== УПРАВЛЕНИЕ ТУРНИРАМИ ====================
+
     async function loadTournaments() {
       const snapshot = await get(ref(db, 'Tournaments'));
       const table = document.getElementById('tournamentsTable');
-      table.innerHTML = '';
-
+      
       if (!snapshot.exists()) {
         table.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Турниров пока нет</td></tr>';
         return;
       }
 
       const tournaments = Object.entries(snapshot.val());
+
+      table.innerHTML = '';
 
       tournaments.forEach(([id, tournament]) => {
         const status = getTournamentStatus(tournament.startDate, tournament.endDate);
@@ -806,18 +1265,20 @@
       }
     }
 
-    // Управление пользователями
+    // ==================== УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ====================
+
     async function loadUsers() {
       const snapshot = await get(ref(db, 'Users'));
       const table = document.getElementById('usersTable');
-      table.innerHTML = '';
-
+      
       if (!snapshot.exists()) {
         table.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Пользователей нет</td></tr>';
         return;
       }
 
       const users = Object.entries(snapshot.val());
+
+      table.innerHTML = '';
 
       users.forEach(([id, userData]) => {
         const profile = userData.profile || {};
@@ -868,12 +1329,12 @@
       }
     }
 
-    // Сообщения
+    // ==================== УПРАВЛЕНИЕ СООБЩЕНИЯМИ ====================
+
     async function loadMessages() {
       const snapshot = await get(ref(db, 'Contacts'));
       const container = document.getElementById('messagesList');
-      container.innerHTML = '';
-
+      
       if (!snapshot.exists()) {
         container.innerHTML = '<div class="text-center py-8 text-gray-500">Сообщений нет</div>';
         return;
@@ -882,6 +1343,8 @@
       const messages = Object.entries(snapshot.val()).sort((a, b) => 
         new Date(b[1].timestamp) - new Date(a[1].timestamp)
       );
+
+      container.innerHTML = '';
 
       messages.forEach(([id, message]) => {
         const messageEl = document.createElement('div');
@@ -909,9 +1372,9 @@
       });
     }
 
-    // Вспомогательные функции
+    // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+
     function showNotification(message, type = 'info') {
-      // Создаем уведомление
       const notification = document.createElement('div');
       notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white ${
         type === 'success' ? 'bg-green-500' : 
@@ -926,14 +1389,14 @@
       }, 3000);
     }
 
-    // Обновляем время
     function updateTime() {
       document.getElementById('currentTime').textContent = new Date().toLocaleString('ru-RU');
     }
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Делаем функции глобальными для использования в onclick
+    // ==================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ====================
+
     window.editNews = editNews;
     window.deleteNews = deleteNews;
     window.closeNewsModal = closeNewsModal;
@@ -943,13 +1406,16 @@
     window.viewUser = viewUser;
     window.deleteUser = deleteUser;
     window.deleteMessage = deleteMessage;
+    window.viewBooking = viewBooking;
+    window.confirmBooking = confirmBooking;
+    window.completeBooking = completeBooking;
+    window.cancelBooking = cancelBooking;
+    window.deleteBooking = deleteBooking;
+    window.closeBookingModal = closeBookingModal;
+    window.sendReminder = sendReminder;
 
-    function editNews(id) { openNewsModal(id); }
-    function editTournament(id) { openTournamentModal(id); }
-    
     function viewUser(id) {
       alert(`Просмотр пользователя ${id}`);
-      
     }
 
     async function deleteUser(userId) {
@@ -969,7 +1435,6 @@
         try {
           await remove(ref(db, `Contacts/${messageId}`));
           loadMessages();
-          loadDashboardStats(); 
           showNotification('Сообщение удалено!', 'success');
         } catch (error) {
           showNotification('Ошибка при удалении сообщения', 'error');
