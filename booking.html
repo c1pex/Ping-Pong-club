@@ -1,54 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бронирование столов | PingPong Club</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Бронирование столов | PingPong Club</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-        font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
     .booking-card {
-        transition: all 0.3s ease;
+      transition: all 0.3s ease;
     }
     .booking-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px -5px rgba(0 ,0, 0, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
-    .time-slot{
-        transition: all 0.2s ease;
+    .time-slot {
+      transition: all 0.2s ease;
     }
     .time-slot:hover:not(.occupied):not(.selected) {
-        background-color: #dbeafe;
+      background-color: #dbeafe;
     }
     .time-slot.selected {
-        background-color: #3b82f6;
-        color: white;
+      background-color: #3b82f6;
+      color: white;
     }
     .time-slot.occupied {
-        background-color: #ef4444;
-        color: white;
-        cursor: not-allowed;
+      background-color: #ef4444;
+      color: white;
+      cursor: not-allowed;
     }
     .table-available {
-        border-left: 4px solid #10b981;
+      border-left: 4px solid #10b981;
     }
     .table-occupied {
-        border-left: 4px solid #ef4444;
+      border-left: 4px solid #ef4444;
     }
     .table-maintenance {
-        border-left: 4px solid #f59e0b;
+      border-left: 4px solid #f59e0b;
     }
   </style>
-
 </head>
 <body class="bg-gray-50 text-gray-800">
-    
-    <!-- Навигация -->
+
+  <!-- Навигация -->
   <header class="bg-white shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <a href="index.html" class="text-2xl font-bold flex items-center space-x-2 text-pingpong-blue">
@@ -73,7 +71,8 @@
       </div>
     </div>
   </header>
-    <!--Хлебные крошки-->
+
+  <!-- Хлебные крошки -->
   <nav class="bg-gray-100 py-4">
     <div class="max-w-7xl mx-auto px-4">
       <ol class="flex items-center space-x-2 text-sm">
@@ -91,6 +90,7 @@
       </ol>
     </div>
   </nav>
+
   <!-- Основной контент -->
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="text-center mb-12">
@@ -103,6 +103,7 @@
       <div class="lg:col-span-2">
         <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
           <h2 class="text-2xl font-bold mb-6">Выберите дату и время</h2>
+          
           <!-- Календарь -->
           <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700 mb-2">Дата бронирования</label>
@@ -127,6 +128,7 @@
             <!-- Столы будут загружены динамически -->
           </div>
         </div>
+
         <!-- Форма бронирования -->
         <div id="bookingForm" class="bg-white rounded-xl shadow-lg p-6 hidden">
           <h2 class="text-2xl font-bold mb-6">Подтверждение бронирования</h2>
@@ -271,6 +273,7 @@
       </div>
     </div>
   </footer>
+
   <!-- Подключаем Flatpickr -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
@@ -722,6 +725,5 @@
       }
     });
   </script>
-    </body>
 </body>
 </html>
