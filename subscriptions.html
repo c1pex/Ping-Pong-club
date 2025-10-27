@@ -417,4 +417,201 @@
     </div>
   </footer>
     </header>
+
+    <!-- Скрипт для работы с абонементами -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIfPeJSURQW_TNBYvaKcsX6bDtMLwr-ZE",
+      authDomain: "tennizov.firebaseapp.com",
+      databaseURL: "https://tennizov-default-rtdb.firebaseio.com",
+      projectId: "tennizov",
+      storageBucket: "tennizov.appspot.com",
+      messagingSenderId: "194989527761",
+      appId: "1:194989527761:web:c0a4ba1fcf9484709fabf0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Данные абонементов
+    const subscriptionPlans = {
+      beginner: {
+        name: "Начальный",
+        price: 1500,
+        hours: 10,
+        features: ["10 часов игры", "Любые столы", "Бесплатная аренда ракеток"]
+      },
+      standard: {
+        name: "Стандарт", 
+        price: 2500,
+        hours: 20,
+        features: ["20 часов игры", "Профессиональные столы", "Бесплатная аренда ракеток", "Участие в турнирах"]
+      },
+      premium: {
+        name: "Премиум",
+        price: 4000, 
+        hours: "Неограниченно",
+        features: ["Неограниченные часы", "Все столы без ограничений", "Премиум ракетки", "Приоритет в турнирах", "2 персональные тренировки"]
+      },
+      yearly: {
+        name: "Годовой",
+        price: 25000,
+        hours: "Неограниченно",
+        features: ["Неограниченные часы", "Все столы без ограничений", "Персональный шкафчик", "Бесплатные напитки", "12 персональных тренировок"]
+      }
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+      initSubscriptionSystem();
+    });
+
+    function initSubscriptionSystem() {
+      // Обработчики кнопок выбора тарифов
+      document.querySelectorAll('.subscribe-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const plan = this.getAttribute('data-plan');
+          openSubscriptionModal(plan);
+        });
+      });
+
+      // Обработчик формы
+      document.getElementById('subscriptionForm').addEventListener('submit', handleSubscriptionSubmit);
+    }
+
+    function openSubscriptionModal(plan) {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Пожалуйста, войдите в систему для покупки абонемента');
+        window.location.href = 'authorization.html';
+        return;
+      }
+
+      const planData = subscriptionPlans[plan];
+      if (!planData) return;
+
+      document.getElementById('selectedPlan').value = plan;
+      document.getElementById('modalTitle').textContent = `Оформление абонемента "${planData.name}"`;
+      document.getElementById('totalPrice').textContent = `${planData.price} ₽`;
+
+      // Заполняем детали плана
+      const planDetails = document.getElementById('planDetails');
+      planDetails.innerHTML = `
+        <h4 class="font-semibold mb-2">${planData.name}</h4>
+        <ul class="text-sm text-gray-600 space-y-1">
+          ${planData.features.map(feature => `<li>• ${feature}</li>`).join('')}
+        </ul>
+        <div class="mt-3 pt-3 border-t border-gray-200">
+          <p class="font-semibold">Срок действия: 30 дней</p>
+          <p class="text-sm text-gray-600">Активируется сразу после оплаты</p>
+        </div>
+      `;
+
+      document.getElementById('subscriptionModal').classList.remove('hidden');
+    }
+
+    function closeSubscriptionModal() {
+      document.getElementById('subscriptionModal').classList.add('hidden');
+    }
+
+    async function handleSubscriptionSubmit(e) {
+      e.preventDefault();
+      
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const plan = document.getElementById('selectedPlan').value;
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const planData = subscriptionPlans[plan];
+
+      const subscriptionData = {
+        userId: user.uid,
+        plan: plan,
+        planName: planData.name,
+        price: planData.price,
+        hours: planData.hours,
+        paymentMethod: paymentMethod,
+        status: 'active',
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // +30 дней
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        // Сохраняем абонемент в базе данных
+        await push(ref(db, 'Subscriptions'), subscriptionData);
+        
+        // Обновляем профиль пользователя
+        await set(ref(db, `Users/${user.uid}/subscription`), {
+          active: true,
+          plan: plan,
+          hours: planData.hours,
+          startDate: subscriptionData.startDate,
+          endDate: subscriptionData.endDate
+        });
+
+        showSuccessMessage(planData);
+        closeSubscriptionModal();
+
+      } catch (error) {
+        console.error('Ошибка оформления абонемента:', error);
+        alert('Произошла ошибка при оформлении абонемента. Пожалуйста, попробуйте еще раз.');
+      }
+    }
+
+    function showSuccessMessage(planData) {
+      const successHTML = `
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl p-6 max-w-md mx-4 text-center">
+            <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+            <h3 class="text-2xl font-bold mb-2">Абонемент активирован!</h3>
+            <p class="text-gray-600 mb-4">
+              Тариф "${planData.name}" успешно активирован.<br>
+              Срок действия: 30 дней
+            </p>
+            <p class="text-sm text-gray-500 mb-4">
+              ${planData.hours === "Неограниченно" ? "Неограниченные часы игры" : `${planData.hours} часов игры`}
+            </p>
+            <div class="flex space-x-3 justify-center">
+              <button onclick="this.parentElement.parentElement.remove()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                Понятно
+              </button>
+              <a href="profile.html" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition">
+                В профиль
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.insertAdjacentHTML('beforeend', successHTML);
+    }
+
+    // Управление авторизацией
+    onAuthStateChanged(auth, (user) => {
+      const authButton = document.querySelector('.auth-button');
+      
+      if (user) {
+        authButton.innerHTML = `<i class="fas fa-user mr-2"></i>${user.displayName || user.email}`;
+        authButton.href = "profile.html";
+      } else {
+        authButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Вход';
+        authButton.href = "authorization.html";
+      }
+    });
+
+    // Обработчик клика по кнопке профиля
+    document.querySelector('.auth-button').addEventListener('click', function(e) {
+      const user = auth.currentUser;
+      if (!user) {
+        e.preventDefault();
+        window.location.href = 'authorization.html';
+      }
+    });
+  </script>
 </body>
