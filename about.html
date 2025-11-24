@@ -7,7 +7,7 @@
   <meta name="description" content="Узнайте историю PingPong Club, познакомьтесь с нашей миссией и командой профессиональных тренеров. Мы делаем настольный теннис доступным для всех.">
   <meta name="keywords" content="история клуба, миссия клуба, тренеры, команда, о пинг-понг клубе">
   <meta name="robots" content="index, follow">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,30 +51,42 @@
 <body class="bg-gray-50 text-gray-800 font-montserrat">
 
   <!-- Навигация -->
-  <header class="bg-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <a href="index.html" class="text-2xl font-bold flex items-center space-x-2 text-pingpong-blue">
-        <i class="fas fa-table-tennis-paddle-ball text-pingpong-orange"></i>
-        <span>PingPong Club</span>
-      </a>
-      <nav class="hidden md:flex space-x-8">
-        <a href="index.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Главная</a>
-        <a href="about.html" class="font-medium text-pingpong-blue border-b-2 border-pingpong-blue pb-1">О нас</a>
-        <a href="tournaments.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Турниры</a>
-        <a href="training.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Тренировки</a>
-        <a href="subscriptions.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Абонементы</a>
-        <a href="contacts.html" class="font-medium text-gray-600 hover:text-pingpong-blue transition">Контакты</a>
-      </nav>
-      <div class="flex items-center space-x-4">
-        <a href="authorization.html" class="bg-pingpong-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition font-medium">
-          <i class="fas fa-sign-in-alt mr-2"></i>Вход
-        </a>
-        <button class="md:hidden text-gray-600">
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-      </div>
+ <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="index.html" class="flex items-center space-x-2 min-h-[44px]">
+                <span class="text-2xl font-bold text-pingpong-blue">PingPong Club</span>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden p-2 rounded-lg text-gray-700 hover:text-pingpong-blue hover:bg-gray-100 transition min-w-[44px] min-h-[44px]" aria-label="Открыть меню">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+
+            <nav id="mobile-menu" class="hidden md:flex md:items-center md:space-x-4 flex-col md:flex-row absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent shadow-lg md:shadow-none p-4 md:p-0">
+                
+                <a href="about.html" class="text-gray-700 hover:text-pingpong-blue px-3 py-2 rounded-lg font-medium text-lg min-h-[44px] flex items-center">О клубе</a>
+                <a href="tournaments.html" class="text-gray-700 hover:text-pingpong-blue px-3 py-2 rounded-lg font-medium text-lg min-h-[44px] flex items-center">Турниры</a>
+                <a href="training.html" class="text-gray-700 hover:text-pingpong-blue px-3 py-2 rounded-lg font-medium text-lg min-h-[44px] flex items-center">Тренировки</a>
+                <a href="subscriptions.html" class="text-gray-700 hover:text-pingpong-blue px-3 py-2 rounded-lg font-medium text-lg min-h-[44px] flex items-center">Абонементы</a>
+                <a href="contacts.html" class="text-gray-700 hover:text-pingpong-blue px-3 py-2 rounded-lg font-medium text-lg mb-2 md:mb-0 min-h-[44px] flex items-center">Контакты</a>
+
+                <div class="md:ml-4 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 w-full md:w-auto">
+                    <a href="authorization.html" class="auth-button bg-pingpong-blue text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition text-center min-h-[44px] flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Вход
+                    </a>
+                    </div>
+            </nav>
+        </div>
     </div>
-  </header>
+</header>
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+        menu.classList.toggle('flex');
+    });
+</script>
 <!-- Хлебные крошки -->
 <nav class="bg-gray-100 py-4">
   <div class="max-w-7xl mx-auto px-4">
