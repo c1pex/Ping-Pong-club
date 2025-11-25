@@ -1,0 +1,14 @@
+{
+  "name": "pingpong-club-frontend",
+  "version": "1.0.0",
+  "description": "Статический клиентский интерфейс PingPong Club.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000",
+    "build": "echo 'Frontend is static, no build step needed'" 
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

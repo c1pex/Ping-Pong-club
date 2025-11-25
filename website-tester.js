@@ -30,7 +30,8 @@ function checkWebsite(url) {
 // Тестируем нужные сайты
 const websites = [
     'https://google.com',
-    'https://github.com'
+    'https://github.com',
+    'https://c1pex.github.io/Ping-Pong-club/'
     // Добавь здесь URL своего сайта
 ];
 

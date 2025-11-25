@@ -1,20 +1,17 @@
 {
-  "name": "web_nastt",
+  "name": "pingpong-club-docker",
   "version": "1.0.0",
-  "description": "",
-  "main": "authorization.js",
+  "description": "Общий пакет для многоконтейнерного приложения PingPong Club, включая утилиты тестирования.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "docker-compose up -d --build",
+    "stop": "docker-compose down",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "test:load": "node load-tester.js",
+    "test:website": "node website-tester.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/c1pex/Ping-Pong-club.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/c1pex/Ping-Pong-club/issues"
-  },
-  "homepage": "https://github.com/c1pex/Ping-Pong-club#readme"
+  "keywords": [
+    "docker",
+    "compose",
+    "fullstack"
+  ]
 }
